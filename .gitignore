@@ -10,6 +10,7 @@ bin/
 pkg/
 .DS_Store
 github.com
+code.google.com
 
 # Architecture specific extensions/prefixes
 *.[568vq]
