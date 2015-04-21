@@ -2,6 +2,9 @@ package action
 
 import (
 	"common"
+	"github.com/dchest/authcookie"
+	"net/http"
+	"time"
 )
 
 type Account struct {
@@ -15,7 +18,7 @@ type Account struct {
 }
 
 //帐号注册
-func RegisterAccount(request common.RequestData) (code int, result string) {
+func RegisterAccount(w http.ResponseWriter, res http.Response, request common.RequestData) (code int, result string) {
 	//把前台参数转换成结构体
 	var account Account
 	err := json.Unmarshal([]byte(request.Params), &account)
@@ -42,10 +45,22 @@ func RegisterAccount(request common.RequestData) (code int, result string) {
 		return 1, "mobile can't be empty"
 	}
 
+	//校验账户、邮箱、手机号码是否已存在
+	if true == isFieldExist("ac_name", account.Ac_name) {
+		return 1, "ac_name is already exist"
+	}
+	if true == isFieldExist("email", account.Email) {
+		return 1, "email is already exist"
+	}
+	if true == isFieldExist("mobile", account.Mobile) {
+		return 1, "mobile is already exist"
+	}
+
 }
 
 //登录
-func Login(request common.RequestData) (code int, result string) {
+func Login(w http.ResponseWriter, res http.Response, request common.RequestData) (code int, result string) {
+
 	//把前台参数转换成结构体
 	var account Account
 	err := json.Unmarshal([]byte(request.Params), &account)
@@ -64,6 +79,10 @@ func Login(request common.RequestData) (code int, result string) {
 		return 1, "ac_password can't be empty"
 	}
 
+	//生成cookie，放到reponse对象中
+	secret := []byte("secret")
+	cookie := authcookie.NewSinceNow(account.Ac_name, 24*time.Hour, secret)
+	http.SetCookie(w, cookie)
 }
 
 //查询账户是否存在
