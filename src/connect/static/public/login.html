@@ -1,0 +1,167 @@
+<html>
+ <head>
+  <meta charset="utf-8" /> 
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge" /> 
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1" /> 
+  <link rel="stylesheet" type="text/css" href="./css/main.css" /> 
+ </head>
+ <body>  
+  <div class="login" id="login"> 
+   <div id="header" class="header"> 
+    <div class="switch" id="switch"> 
+     <a class="switch_btn" hidefocus="true" id="switcher_qlogin" href="javascript:void(0);" onclick="switchpage(1)" tabindex="7">快速登录</a> 
+     <a class="switch_btn_focus" hidefocus="true" id="switcher_plogin" href="javascript:void(0);" onclick="switchpage(2)" tabindex="8">帐号密码登录</a> 
+     <div class="switch_bottom" id="switch_bottom" style="left: 154px; width: 96px; position: absolute;"></div> 
+    </div> 
+   </div> 
+    
+   <div class="qlogin" id="qlogin" style="display: none;"> 
+    <a title="上一页" class="prePage" id="prePage" href="javascript:void(0);"> <span class="preRow" tabindex="6"></span> </a> 
+    <div class="qlogin_show" id="qlogin_show" style="top: 25px;"> 
+     <div class="qlogin_list" id="qlogin_list" style="width: 304px;"> 
+      <span id="qr_area" class="qr_0"> <span class="qr_safe_tips">安全登录，防止被盗</span>
+      <img id="qrlogin_img" class="qrImg" alt="" src="./images/ptqrshow.png" />
+      <span class="qr_app_name"><span class="qr_safe_login">安全登录</span> 
+      	<a hidefocus="true" draggable="false" class="qr_info_link" href="javascript:void(0)" target="_blank">使用手机端扫描二维码</a>
+      </span>
+      </span> 
+     </div> 
+    </div> 
+    <a title="下一页" class="nextPage" id="nextPage" href="javascript:void(0);"> <span class="nextRow" tabindex="7"></span> </a> 
+   </div> 
+   <div class="web_qr_login" id="web_qr_login" style="display: block; height: 265px;"> 
+    <div class="web_qr_login_show" id="web_qr_login_show"> 
+     <div class="web_login" id="web_login"> 
+     
+      <div class="login_form" style="margin-top: 50px;">
+       <form id="loginform" autocomplete="off" name="loginform" action="./login" method="post" target="_self" style="margin:0">
+        <div class="uinArea" id="uinArea">
+         <label class="input_tips" id="uin_tips" for="u" style="display: block;">支持账号/邮箱/手机号登录</label>
+         <div class="inputOuter">
+          <input type="text" class="inputstyle" id="u" name="u" value="" tabindex="1" onfocus="onfocusU()"  onblur="onblurU()"   onkeyup="keyupU()" /> 
+          <a class="uin_del" id="uin_del" href="javascript:void(0);" onclick="uindel()" ></a>
+         </div>
+         <ul class="email_list" id="email_list" style="display: none;"></ul>
+        </div>
+        <div class="pwdArea" id="pwdArea">
+         <label class="input_tips" id="pwd_tips" for="p">密码</label>
+         <div class="inputOuter">
+          <input type="password" class="inputstyle password" id="p" name="p" value="" maxlength="16" tabindex="2" onfocus="onfocusP()"  onblur="onblurP()" onkeyup="keyupP()"  onkeypress="detectCapsLockP(event)" />
+         </div>
+         <div class="lock_tips" id="caps_lock_tips">
+          <span class="lock_tips_row"></span> 
+          <span>大写锁定已打开</span>
+         </div>
+        </div>
+        <div class="verifyArea" id="verifyArea">
+         <div class="verifyinputArea" id="verifyinputArea">
+          <label class="input_tips" id="vc_tips" for="verifycode">验证码</label>
+          <div class="inputOuter">
+           <input name="verifycode" type="text" class="inputstyle verifycode" id="verifycode" value="" tabindex="3" />
+          </div>
+         </div>
+         <div class="verifyimgArea" id="verifyimgArea">
+          <img class="verifyimg" id="verifyimg" title="看不清，换一张" /> 
+          <a tabindex="4" href="javascript:void(0);" class="verifyimg_tips">看不清，换一张</a>
+         </div>
+        </div>
+        <div class="submit">
+         <a class="login_button" href="javascript:void(0);" hidefocus="true"><input type="submit" tabindex="6" value="授权并登录" class="btn" id="login_button" /></a> 
+        </div>
+       </form>
+      </div>
+      <div class="bottom" id="bottom_web" style="display: block;">
+       <a href="./forgetpwd" class="link" id="forgetpwd" target="_blank">忘了密码？</a> 
+       <span class="dotted">|</span> 
+       <a href="./register" class="link" target="_blank">注册新帐号</a> 
+       <span class="dotted">|</span> 
+       <a class="link" id="feedback_web" href="javascript:void(0);" >使用帮助</a>
+      </div>
+       
+     </div>
+    </div>
+   </div> 
+   <div class="bottom hide" id="bottom_qlogin" style="display: none;">
+	   	 <a href="./register" class="link" target="_blank">注册新帐号</a> 
+	   	 <span class="dotted">|</span> 
+	   	 <a class="link" id="feedback_qlogin" href="javascript:void(0);">使用帮助</a>
+	   	</div>
+   
+
+<script>
+	function switchpage (a){
+		 switch (a) {
+        case 1:
+        	document.getElementById("switcher_qlogin").className ="switch_btn_focus";
+        	document.getElementById("switcher_plogin").className ="switch_btn";
+        	document.getElementById("switch_bottom").style.cssText ="left: 0px; width: 64px; position: absolute;";
+        	document.getElementById("qlogin").style.cssText ="display: block;";
+        	document.getElementById("web_qr_login").style.cssText ="display: none; height: 265px;";
+        	document.getElementById("bottom_qlogin").style.cssText ="display: block;";
+         break;
+        case 2:
+	        document.getElementById("switcher_qlogin").className ="switch_btn";
+	        document.getElementById("switcher_plogin").className ="switch_btn_focus";
+	        document.getElementById("switch_bottom").style.cssText ="left: 154px; width: 96px; position: absolute;";
+	        document.getElementById("qlogin").style.cssText ="display: none;";
+	        document.getElementById("web_qr_login").style.cssText ="display: block; height: 265px;";
+	        document.getElementById("bottom_qlogin").style.cssText ="display: none;";
+      	break;
+      }
+	}
+	function onfocusU (a){
+	 document.getElementById("uin_tips").className = "input_tips_focus";
+	 document.getElementById("u").parentNode.className = "inputOuter_focus";
+	}
+	function onblurU (a){
+	 document.getElementById("uin_tips").className = "input_tips";
+	 document.getElementById("u").parentNode.className = "inputOuter";
+	}
+	function onfocusP (a){
+	 document.getElementById("pwd_tips").className = "input_tips_focus";
+	 document.getElementById("p").parentNode.className = "inputOuter_focus";
+	}
+	function onblurP (a){
+	 document.getElementById("pwd_tips").className = "input_tips";
+	 document.getElementById("p").parentNode.className = "inputOuter";
+	}
+	
+	function keyupU () {
+		if (document.getElementById("u").value == "") {
+	    document.getElementById("uin_tips").className = "input_tips_focus";
+	    document.getElementById("uin_del").style.cssText ="display: none;";
+	    document.getElementById("uin_tips").style.cssText ="display: block;";
+		} else {
+			document.getElementById("uin_del").style.cssText ="display: block;";
+			document.getElementById("uin_tips").style.cssText ="display: none;";
+		}
+  }
+  function uindel (){
+  	document.getElementById("uin_del").style.cssText ="display: none;";
+    document.getElementById("uin_tips").style.cssText ="display: block;";
+    document.getElementById("uin_tips").className = "input_tips";
+	  document.getElementById("u").parentNode.className = "inputOuter";
+	  document.getElementById("u").value="";
+  }
+	function detectCapsLockP(c) {
+        var b = c.keyCode || c.which;
+        var a = c.shiftKey || (b == 16) || false;
+        if (((b >= 65 && b <= 90) && !a) || ((b >= 97 && b <= 122) && a)) {
+            document.getElementById("caps_lock_tips").style.cssText ="display: block;";
+        } else {
+            document.getElementById("caps_lock_tips").style.cssText ="display: none;";
+        }
+        document.getElementById("pwd_tips").style.cssText ="display: none;";
+  }
+  function keyupP () {
+		if (document.getElementById("p").value == "") {
+	    document.getElementById("pwd_tips").className = "input_tips_focus";
+	    document.getElementById("pwd_tips").style.cssText ="display: block;";
+		} else {
+			document.getElementById("pwd_tips").style.cssText ="display: none;";
+		}
+  }
+  
+</script>
+ </body>
+</html>

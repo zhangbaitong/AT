@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1">
+	<!-- @fragment_top Start-->
+<meta charset="UTF-8">
+<title>帐号安全登录授权</title>
+<link rel="Shortcut Icon" href="./images/favicon.ico" type="image/x-icon">
+<link rel="icon" href="./images/favicon.ico" type="image/x-icon">
+<link href="http://qzonestyle.gtimg.cn/open/connect/widget/pc/login/qlogin_v2.min.css?max_age=2592000&v=20140818" rel="stylesheet">
+<style type="text/css"></style>
+</head>
+<body>
+<!-- @header Start-->
+<div class="lay_top">
+    <div class="lay_top_inner" style="width: 688px;">
+        <h1 class="logo text_hide">方舟登陆</h1>
+        <div class="lat_top_other">
+            <a href="#" title="什么是方舟登陆"><i class="icon_help_white"></i>方舟登陆</a>
+            <span class="line">|</span>
+            <a href="./oauthmanager" id="auth_manager_link" target="_blank" title="登录授权管理">授权管理</a>
+            <span class="line">|</span>
+            <a href="http://open.funzhou.cn" target="_blank" title="申请资源接入">申请接入</a>
+        </div>
+    </div>
+</div>
+<!-- @header End -->
+<div id="combine_page" style="width: 688px;">
+  <div class="page_login combine_page_children float_left border_right">
+    <div class="lay_login_form">
+      <iframe frameborder="0" width="370" height="316" id="ptlogin_iframe" src="login.html" name="ptlogin_iframe"></iframe>
+      
+    </div>
+  </div>
+  <div class="page_accredit combine_page_children float_left">
+    <div class="lay_main" id="lay_main">
+      <div class="lay_accredit_con">
+        <p class="cnt_wording">登陆到该系统,授予其获得以下权限</p>
+        <p class="app_site_wording"><a class="accredit_site" id="accredit_site_link" href="http://www.infobird.com/" target="_blank">讯鸟云计算科技</a>将获得以下权限：</p>
+        <div class="accredit_info" id="accredit_info">
+          <ul class="accredit_info_op">
+            <li class="select_all_li">
+              <input type="checkbox" id="select_all" class="checkbox oauth_checkbox_all" hidefocus="true" checked="checked">
+              <label class="oauth_item_title" for="select_all">全选</label>
+            </li>   
+            <li>
+              <input name="api_choose" hidefocus="true" type="checkbox" class="checkbox oauth_checkbox" id="item_80901010" value="80901010" title="默认授权 不可更改" checked="" disabled="">
+              <label for="item_80901010" class="oauth_item_title">获得您openID</label>
+            </li>
+            
+          </ul>
+        </div>
+        <div class="oauth_tips_div">
+          <p class="oauth_tips">授权后表明你已同意 <a href="http://connect.qq.com/agreement_chs" target="_blank">QQ登录服务协议</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    _speedTiming.push(+new Date);
+    var Q = {};
+    Q.authsCount = 1;
+    Q.isNeedLogin = false;
+    Q.crtDomain = 'http://xmt.www.mi.com/qq_check.html';
+    Q.agree = function(){
+        window.isAgreed = true;
+    };
+    Q.logout = function(){
+        window.isLogouted = true;
+    };
+    
+    Q.isNeedLogin = true;
+    Q.getParameter = function getParameter(name) {
+        var r = new RegExp("(\\?|#|&)" + name + "=([^&#]*)(&|#|$)"), m = location.href.match(r);
+        return decodeURIComponent(!m ? "" : m[2]);
+    };
+    Q.ptlogin2 = function(){
+        var s_url = 'http://openapi.qzone.qq.com/oauth/login_jump';
+        s_url = 'http://xui.ptlogin2.qq.com/cgi-bin/xlogin?appid=716027609&style=23&login_text=%E6%8E%88%E6%9D%83%E5%B9%B6%E7%99%BB%E5%BD%95&hide_title_bar=1&hide_border=1&target=self&s_url=' + encodeURIComponent(s_url);
+
+        var clientId = Q.getParameter('client_id') || '';
+        clientId && (s_url += ("&pt_3rd_aid="+encodeURIComponent(clientId)));
+
+        var dmHost = ((Q.crtDomain || Q.getParameter('redirect_uri') || '').match(/http:\/\/([^/]*)\/?/i) || [])[1] || '';
+        var feed_back_link = 'http://support.qq.com/write.shtml?fid=780&SSTAG='+encodeURIComponent(dmHost) + '.appid' + clientId;
+        s_url += ('&pt_feedback_link=' + encodeURIComponent(feed_back_link));
+        document.getElementById('ptlogin_iframe').src = s_url;
+    };
+    Q.ptlogin2();
+    
+    
+    function ptlogin2_onResize(w, h) {
+    	var f = document.getElementById('ptlogin_iframe');
+    	f.width = w;
+    	f.height = h;
+    }
+    if (!window.JSON) {
+    	document.write('<script type="text/javascript" src="http://qzonestyle.gtimg.cn/open/operate/mlib/widget/json-for-ie.js"><\/script>');
+    }
+</script>
+
+</body></html>
