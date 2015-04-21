@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/zhangbaitong/go-uuid/uuid"
 )
 
 func GetDB() (db *sql.DB) {
@@ -14,4 +15,8 @@ func GetDB() (db *sql.DB) {
 		return nil
 	}
 	return db
+}
+
+func GetUID() string {
+	return uuid.NewUUID().String()
 }
