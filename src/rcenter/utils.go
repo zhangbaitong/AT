@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/tomzhaogy/go-uuid"
+	"github.com/zhangbaitong/go-uuid/uuid"
 )
 
 func main() {
-	uuid1 := NewUUID()
+	uuid1 := uuid.NewUUID()
 	fmt.Print(uuid1)
 }
