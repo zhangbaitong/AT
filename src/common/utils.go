@@ -7,8 +7,10 @@ import (
 	"github.com/zhangbaitong/go-uuid/uuid"
 )
 
+//the global var of db connection,it will be create only once.
 var Conn *sql.DB
 
+//Get db connection from mysql
 func GetDB() (db *sql.DB) {
 	if Conn == nil {
 		db, err := sql.Open("mysql", "root:111111@tcp(117.78.19.76:3306)/at_db")
@@ -22,6 +24,7 @@ func GetDB() (db *sql.DB) {
 	return Conn
 }
 
+//get uuid lik a227cedf-e806-11e4-8666-3c075419d855
 func GetUID() string {
 	return uuid.NewUUID().String()
 }
