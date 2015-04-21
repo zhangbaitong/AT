@@ -44,7 +44,7 @@ func main() {
 	hs := make(HostSwitch)
 	hs["127.0.0.1:8080"] = router
 
-	// Use the HostSwitch to listen and serve on port 12345
 	//log.Fatal(http.ListenAndServe(":8080", hs))
-	log.Fatal(http.ListenAndServeTLS(":8080", "servercert.pem", "serverkey.pem", hs))
+	///home/tomzhao/AT/src/connect/static/pem/servercert.pem
+	log.Fatal(http.ListenAndServeTLS(":8080", "../connect/static/pem/servercert.pem", "../connect/static/pem/serverkey.pem", hs))
 }
