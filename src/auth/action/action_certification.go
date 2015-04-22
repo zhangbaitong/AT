@@ -33,6 +33,16 @@ func getParams( r *http.Request) (params string) {
 	return request.Params
 }
 
+func setParams(strMethod string, code int,strMessgae string,strData string)(strbody []byte,err error){
+	v1 := common.Response{Method: strMethod, Code: code, Messgae: strMessgae, Data: strData}	
+	body, err := json.Marshal(v1)
+	if err != nil {
+		fmt.Println(err)
+		return body, err
+	}
+	return body, nil
+}
+
 var logger *log.Logger
 
 func init() {
@@ -119,4 +129,41 @@ func isFieldExist(name string, value string) bool {
 func Logout(w http.ResponseWriter, r *http.Request,ps httprouter.Params){
 	strParams:=getParams(r);
 	fmt.Fprint(w, "%s BYE BYE !\n",strParams)
+}
+
+func GetAcidByOpenid(w http.ResponseWriter, r *http.Request,ps httprouter.Params){
+	strParams:=getParams(r);
+	var openvalue map[string]interface{}
+	err := json.Unmarshal([]byte(strParams), &openvalue)
+	if err != nil {
+		logger.Println("json data decode faild :", err)
+		return 
+	}
+	common.DisplayJson(openvalue)
+	strOpenid, ok := openvalue["openid"].(string)
+	if !ok {
+		fmt.Fprint(w, "openid error !\n")
+		return 
+	}
+
+	strSQL:=fmt.Sprintf("select acid from openid_tab where openid='%s'",strOpenid)
+
+	rows, err := common.GetDB().Query(strSQL)
+	defer rows.Close()
+	var strBody []byte
+	if err != nil {
+		strBody,_=setParams("/auth/getacid",1,"database error !","")
+	} else {
+		var nAcid int
+		for rows.Next() {
+			rows.Scan(&nAcid)
+		}
+		if nAcid==0 {
+			strBody,_=setParams("/auth/getacid",1,"user acid not exist!","")
+		} else {
+			strData:=fmt.Sprintf( "{\"acid\":\"%d\"}",nAcid)
+			strBody,_=setParams("/auth/getacid",0,"ok",strData)			
+		}
+	}	
+	w.Write(strBody)	
 }

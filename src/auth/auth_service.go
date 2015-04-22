@@ -37,6 +37,7 @@ func new_router()(*httprouter.Router) {
     //router.GET("/", Index)
     //router.GET("/hello/:name", Hello)
     router.POST("/auth/logout", action.Logout)
+    router.POST("/auth/getacid", action.GetAcidByOpenid)
     return router
 }
 
