@@ -6,6 +6,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"fmt"
+	"time"
 	"encoding/json"
 	"log"
 )
@@ -19,6 +20,10 @@ type Account struct {
 	Status      int
 	Create_time int
 }
+
+const (
+	INSERT       string = "insert into account_tab (ac_name,ac_password,email,mobile,status,create_time) values (?,?,?,?,?,?)"
+)
 
 func getParams( r *http.Request) (params string) {
 	strPostData := r.FormValue("request")
@@ -51,66 +56,125 @@ func init() {
 		logger = common.Log()
 	}
 }
+
+func register_insert(ac *Account) (ok bool) {
+	tx, err := common.GetDB().Begin()
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+	stmt, err := tx.Prepare(INSERT)
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(ac.Ac_name, ac.Ac_password, ac.Email, ac.Mobile, 0, time.Now().Unix())
+
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+	tx.Commit()
+	return true
+}
+
+
 //帐号注册
-func RegisterAccount(w http.ResponseWriter, res http.Response, request common.RequestData) (code int, result string) {
+func RegisterAccount(w http.ResponseWriter, r *http.Request, ps httprouter.Params){
 	//把前台参数转换成结构体
+	strParams:=getParams(r);
 	var account Account
-	err := json.Unmarshal([]byte(request.Params), &account)
+	err := json.Unmarshal([]byte(strParams), &account)
+	var strBody []byte
 	if err != nil {
 		logger.Println("json data decode faild :", err)
-		return 1, "json data decode faild"
+		strBody,_=setParams("/auth/register",1,"json data decode faild !","")
+		w.Write(strBody)	
+		return 
 	}
 
 	//参数校验
 	if account.Ac_name == "" {
 		logger.Println("action_certification：ac_name can't be empty")
-		return 1, "ac_name can't be empty"
+		strBody,_=setParams("/auth/register",1,"ac_name can't be empty!","")
+		w.Write(strBody)	
+		return 
 	}
 	if account.Ac_password == "" {
 		logger.Println("action_certification：ac_password can't be empty")
-		return 1, "ac_password can't be empty"
+		strBody,_=setParams("/auth/register",1,"ac_password can't be empty!","")
+		w.Write(strBody)	
+		return
 	}
 	if account.Email == "" {
 		logger.Println("action_certification：email can't be empty")
-		return 1, "ac_email can't be empty"
+		strBody,_=setParams("/auth/register",1,"ac_email can't be empty!","")
+		w.Write(strBody)	
+		return
 	}
 	if account.Mobile == "" {
 		logger.Println("action_certification：mobile can't be empty")
-		return 1, "mobile can't be empty"
+		strBody,_=setParams("/auth/register",1,"mobile can't be empty!","")
+		w.Write(strBody)	
+		return
 	}
 
 	//校验账户、邮箱、手机号码是否已存在
 	if true == isFieldExist("ac_name", account.Ac_name) {
-		return 1, "ac_name is already exist"
+		strBody,_=setParams("/auth/register",1,"ac_name is already exist!","")
+		w.Write(strBody)	
+		return
 	}
 	if true == isFieldExist("email", account.Email) {
-		return 1, "email is already exist"
+		strBody,_=setParams("/auth/register",1,"email is already exist!","")
+		w.Write(strBody)	
+		return
 	}
 	if true == isFieldExist("mobile", account.Mobile) {
-		return 1, "mobile is already exist"
+		strBody,_=setParams("/auth/register",1,"mobile is already exist!","")
+		w.Write(strBody)	
+		return
 	}
-	return 0,"OK"
+
+	ok:=register_insert(&account)	
+	if ok {
+		strBody,_=setParams("/auth/register",0,"ok","")			
+	} else {
+		strBody,_=setParams("/auth/register",1,"database error!","")			
+	}	
+	w.Write(strBody)	
+	return 
 }
 
 //登录
-func Login(w http.ResponseWriter, res http.Response, request common.RequestData) (code int, result string) {
+func Login(w http.ResponseWriter, r *http.Request, ps httprouter.Params){
 
 	//把前台参数转换成结构体
+	strParams:=getParams(r);
 	var account Account
-	err := json.Unmarshal([]byte(request.Params), &account)
+	err := json.Unmarshal([]byte(strParams), &account)
+	var strBody []byte
 	if err != nil {
 		logger.Println("json data decode faild :", err)
-		return 1, "json data decode faild"
+		strBody,_=setParams("/auth/register",1,"json data decode faild !","")
+		w.Write(strBody)	
+		return 
 	}
 
 	//参数校验
 	if account.Ac_name == "" {
 		logger.Println("action_certification：ac_name can't be empty")
-		return 1, "ac_name can't be empty"
+		strBody,_=setParams("/auth/register",1,"ac_name can't be empty!","")
+		w.Write(strBody)	
+		return 
 	}
 	if account.Ac_password == "" {
 		logger.Println("action_certification：ac_password can't be empty")
-		return 1, "ac_password can't be empty"
+		strBody,_=setParams("/auth/register",1,"ac_password can't be empty!","")
+		w.Write(strBody)	
+		return
 	}
 
 	//生成cookie，放到reponse对象中
@@ -119,11 +183,26 @@ func Login(w http.ResponseWriter, res http.Response, request common.RequestData)
 	cookie := authcookie.NewSinceNow(account.Ac_name, 24*time.Hour, secret)
 	http.SetCookie(w, cookie)
 	*/
-	return 0,"OK"
+	return
 }
 
 //查询账户是否存在
 func isFieldExist(name string, value string) bool {
+	strSQL:=fmt.Sprintf("select count(ac_name) from account_tab where %s='%s' ",name,value);
+	rows, err := common.GetDB().Query(strSQL)
+	defer rows.Close()
+	if err != nil {
+		return false
+	} else {
+		var nCount int
+		for rows.Next() {
+			rows.Scan(&nCount)
+		}
+
+		if nCount==0 {
+		return false
+		} 
+	}
 	return true
 }
 

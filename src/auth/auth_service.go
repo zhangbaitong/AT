@@ -36,6 +36,8 @@ func new_router()(*httprouter.Router) {
     router := httprouter.New()
     //router.GET("/", Index)
     //router.GET("/hello/:name", Hello)
+    router.POST("/auth/register", action.RegisterAccount)
+    router.POST("/auth/login", action.Logout)
     router.POST("/auth/logout", action.Logout)
     router.POST("/auth/getacid", action.GetAcidByOpenid)
     router.POST("/auth/changepw", action.ChangePassword)
