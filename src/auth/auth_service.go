@@ -7,6 +7,7 @@ import (
 	"log"
 	"runtime"
 	"time"
+	"auth/action"
 )
 
 func init() {
@@ -18,14 +19,14 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 }
 
 func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-    fmt.Fprintf(w, "hello, %s!\n", ps.ByName("name"))
+    fmt.Fprintf(w, "hello, %s!\n", ps)
 }
 
 type HostSwitch map[string]http.Handler
 
 func (hs HostSwitch) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     if handler := hs[r.Host]; handler != nil {
-        handler.ServeHTTP(w, r)
+		handler.ServeHTTP(w, r)
     } else {
         http.Error(w, "Forbidden", 403) // Or Redirect?
     }
@@ -33,8 +34,9 @@ func (hs HostSwitch) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func new_router()(*httprouter.Router) {
     router := httprouter.New()
-    router.GET("/", Index)
-    router.GET("/hello/:name", Hello)
+    //router.GET("/", Index)
+    //router.GET("/hello/:name", Hello)
+    router.POST("/logout", action.Logout)
     return router
 }
 
@@ -44,7 +46,6 @@ func main() {
 	hs := make(HostSwitch)
 	hs["127.0.0.1:8080"] = router
 
-	//log.Fatal(http.ListenAndServe(":8080", hs))
-	///home/tomzhao/AT/src/connect/static/pem/servercert.pem
-	log.Fatal(http.ListenAndServeTLS(":8080", "../connect/static/pem/servercert.pem", "../connect/static/pem/serverkey.pem", hs))
+	log.Fatal(http.ListenAndServe(":8080", hs))
+	//log.Fatal(http.ListenAndServeTLS(":8080", "../connect/static/pem/servercert.pem", "../connect/static/pem/serverkey.pem", hs))
 }
