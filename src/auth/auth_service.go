@@ -36,7 +36,7 @@ func new_router()(*httprouter.Router) {
     router := httprouter.New()
     //router.GET("/", Index)
     //router.GET("/hello/:name", Hello)
-    router.POST("/logout", action.Logout)
+    router.POST("/auth/logout", action.Logout)
     return router
 }
 
