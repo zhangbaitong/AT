@@ -36,10 +36,11 @@ func httpPost() {
 	//data["imageName"]="centos:latest"
 	//data["containerName"]="tomzhao"
 	//post_data := RequestData{Version: "1.0", Method: "/auth/logout", Params: "{\"ac_name\":\"tomzhao\",\"ac_password\":\"111111\"}"}
-	post_data := RequestData{Version: "1.0", Method: "/auth/getacid", Params: "{\"openid\":\"tomzhao\"}"}
+	//post_data := RequestData{Version: "1.0", Method: "/auth/getacid", Params: "{\"openid\":\"tomzhao\"}"}
+	post_data := RequestData{Version: "1.0", Method: "/auth/changepw", Params: "{\"ac_name\":\"tomzhao\",\"old_password\":\"111111\",\"new_password\":\"222222\"}"}
 	strPostData, _ := json.Marshal(post_data)
 	strTemp := "request=" + string(strPostData)
-	resp, err := http.Post("http://127.0.0.1:8080/auth/getacid",
+	resp, err := http.Post("http://127.0.0.1:8080/auth/changepw",
 		"application/x-www-form-urlencoded", strings.NewReader(strTemp))
 	//"application/json",strings.NewReader(strTemp))
 	if err != nil {

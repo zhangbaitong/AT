@@ -28,6 +28,7 @@ func getParams( r *http.Request) (params string) {
 	err := json.Unmarshal([]byte(strPostData), &request)
 	if err != nil {
 		fmt.Println("json data decode faild :", err)
+		return ""
 	}
 	fmt.Println("request.Params :", request.Params)
 	return request.Params
@@ -135,22 +136,25 @@ func GetAcidByOpenid(w http.ResponseWriter, r *http.Request,ps httprouter.Params
 	strParams:=getParams(r);
 	var openvalue map[string]interface{}
 	err := json.Unmarshal([]byte(strParams), &openvalue)
+	var strBody []byte
 	if err != nil {
 		logger.Println("json data decode faild :", err)
-		return 
+		strBody,_=setParams("/auth/getacid",1,"json data decode faild!","")
+		w.Write(strBody)	
+		return
 	}
-	common.DisplayJson(openvalue)
+
 	strOpenid, ok := openvalue["openid"].(string)
 	if !ok {
-		fmt.Fprint(w, "openid error !\n")
-		return 
+		strBody,_=setParams("/auth/getacid",1,"params error, ac_name miss !","")
+		w.Write(strBody)	
+		return
 	}
 
 	strSQL:=fmt.Sprintf("select acid from openid_tab where openid='%s'",strOpenid)
 
 	rows, err := common.GetDB().Query(strSQL)
 	defer rows.Close()
-	var strBody []byte
 	if err != nil {
 		strBody,_=setParams("/auth/getacid",1,"database error !","")
 	} else {
@@ -164,6 +168,83 @@ func GetAcidByOpenid(w http.ResponseWriter, r *http.Request,ps httprouter.Params
 			strData:=fmt.Sprintf( "{\"acid\":\"%d\"}",nAcid)
 			strBody,_=setParams("/auth/getacid",0,"ok",strData)			
 		}
-	}	
+	}
+
+	w.Write(strBody)	
+}
+
+func update_password(strAcName string, strOldPwd string, strNewPwd string) {
+	tx, err := common.GetDB().Begin()
+	if err != nil {
+		fmt.Println(err)
+	}
+	stmt, err := tx.Prepare(" UPDATE account_tab SET ac_password=? where (ac_name=? or email=? or mobile=?) and ac_password=? ")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(strAcName, strAcName, strAcName,strNewPwd, strOldPwd)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	tx.Commit()
+}
+
+func ChangePassword(w http.ResponseWriter, r *http.Request,ps httprouter.Params){
+	strParams:=getParams(r);
+	var openvalue map[string]interface{}
+	err := json.Unmarshal([]byte(strParams), &openvalue)
+	var strBody []byte
+	if err != nil {
+		logger.Println("json data decode faild :", err)
+		strBody,_=setParams("/auth/changepw",1,"json data decode faild!","")
+		w.Write(strBody)	
+		return
+	}
+
+	strAcName, ok := openvalue["ac_name"].(string)
+	if !ok {
+		strBody,_=setParams("/auth/changepw",1,"params error, ac_name miss !","")
+		w.Write(strBody)	
+		return
+	}
+
+	strOldPwd, ok := openvalue["old_password"].(string)
+	if !ok {
+		strBody,_=setParams("/auth/changepw",1,"params error, old_password miss !","")
+		w.Write(strBody)	
+		return
+	}
+
+	strNewPwd, ok := openvalue["new_password"].(string)
+	if !ok {
+		strBody,_=setParams("/auth/changepw",1,"params error, new_password miss !","")
+		w.Write(strBody)	
+		return
+	}
+
+	strSQL:=fmt.Sprintf("select count(ac_name) from account_tab where (ac_name='%s' or email='%s' or mobile='%s') and ac_password='%s'",
+		strAcName,strAcName,strAcName,strOldPwd);
+	fmt.Println("strSQL=",strSQL)
+
+	rows, err := common.GetDB().Query(strSQL)
+	defer rows.Close()
+	if err != nil {
+		strBody,_=setParams("/auth/changepw",1,"database error !","")
+	} else {
+		var nCount int
+		for rows.Next() {
+			rows.Scan(&nCount)
+		}
+		if nCount==0 {
+			strBody,_=setParams("/auth/changepw",1,"user not exist or passsword error!","")
+		} else {
+			update_password(strAcName,strOldPwd,strNewPwd)
+			strBody,_=setParams("/auth/changepw",0,"ok","success")			
+		}
+	}
+
 	w.Write(strBody)	
 }
