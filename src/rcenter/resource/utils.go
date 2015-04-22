@@ -8,14 +8,16 @@ import (
 )
 
 const (
-	SELECT_ALL string = "select * from resource_tab"
-	INSERT     string = "insert into resource_tab (res_id,res_name,owner_acid,operator_acid,status,create_time) values (?,?,?,?,?,?)"
-	UPDATE     string = "update resource_tab  set res_name=?,owner_acid=?,operator_acid=?,status=?,create_time=? where res_id=?"
-	DELETE     string = "delete from resource_tab  where res_id=?"
+	SELECT_ALL   string = "select * from resource_tab"
+	SELECT_BY_ID string = "select * from resource_tab where res_id=%s"
+	INSERT       string = "insert into resource_tab (res_id,res_name,owner_acid,operator_acid,status,create_time) values (?,?,?,?,?,?)"
+	UPDATE       string = "update resource_tab  set res_name=?,owner_acid=?,operator_acid=?,status=?,create_time=? where res_id=?"
+	DELETE       string = "delete from resource_tab  where res_id=?"
 )
 
 func Query(sqlstr string) (ress []Resource, err error) {
 	rows, err := common.GetDB().Query(sqlstr)
+	defer rows.Close()
 	if err != nil {
 		fmt.Println(err)
 	} else {
