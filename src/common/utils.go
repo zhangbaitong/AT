@@ -5,10 +5,13 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/zhangbaitong/go-uuid/uuid"
+	"log"
+	"os"
 )
 
 //the global var of db connection,it will be create only once.
 var Conn *sql.DB
+var Logger *log.Logger
 
 //Get db connection from mysql
 func GetDB() (db *sql.DB) {
@@ -27,4 +30,13 @@ func GetDB() (db *sql.DB) {
 //get uuid lik a227cedf-e806-11e4-8666-3c075419d855
 func GetUID() string {
 	return uuid.NewUUID().String()
+}
+
+//get app logger
+func Log() *log.Logger {
+	if Logger == nil {
+		Logger = log.New(os.Stdout, "AT-Resource : ", log.Ldate|log.Ltime|log.Lshortfile)
+		Logger.Print("logger init success ...")
+	}
+	return Logger
 }
