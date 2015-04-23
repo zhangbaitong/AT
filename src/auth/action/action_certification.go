@@ -336,7 +336,7 @@ func update_password(strAcName string, strOldPwd string, strNewPwd string) {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(strAcName, strAcName, strAcName, strNewPwd, strOldPwd)
+	_, err = stmt.Exec(strNewPwd, strAcName, strAcName,strAcName, strOldPwd)
 
 	if err != nil {
 		fmt.Println(err)
