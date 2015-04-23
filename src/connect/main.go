@@ -12,6 +12,7 @@ func SayHello(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 }
 func main() {
 
+	oauth := action.NewOAuth()
 	register := action.NewRegister()
 	login := action.NewLogin()
 	logout := action.NewLogout()
@@ -25,7 +26,11 @@ func main() {
 	router.GET("/login", login.Get)
 	router.POST("/login", login.Post)
 	router.POST("/logout", logout.Post)
-	router.GET("/me/:access_token", me.Get)
+	router.GET("/me", me.Get)
+
+	router.GET("/oauth2/authorize", oauth.Authorize)
+	router.GET("/oauth2/Token", oauth.Token)
+	router.GET("/oauth2/Info", oauth.Info)
 
 	log.Fatal(http.ListenAndServeTLS(":443", "./static/pem/servercert.pem", "./static/pem/serverkey.pem", router))
 }
