@@ -1,167 +1,170 @@
-<html>
- <head>
-  <meta charset="utf-8" /> 
+<!DOCTYPE html>
+<html lang="zh-cn">
+ <head> 
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
   <meta http-equiv="X-UA-Compatible" content="IE=Edge" /> 
   <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1" /> 
-  <link rel="stylesheet" type="text/css" href="./css/main.css" /> 
- </head>
- <body>  
-  <div class="login" id="login"> 
-   <div id="header" class="header"> 
-    <div class="switch" id="switch"> 
-     <a class="switch_btn" hidefocus="true" id="switcher_qlogin" href="javascript:void(0);" onclick="switchpage(1)" tabindex="7">快速登录</a> 
-     <a class="switch_btn_focus" hidefocus="true" id="switcher_plogin" href="javascript:void(0);" onclick="switchpage(2)" tabindex="8">帐号密码登录</a> 
-     <div class="switch_bottom" id="switch_bottom" style="left: 154px; width: 96px; position: absolute;"></div> 
+  <title>帐号安全登录授权</title> 
+  <link rel="Shortcut Icon" href="./images/favicon.ico" type="image/x-icon" /> 
+  <link rel="icon" href="./images/favicon.ico" type="image/x-icon" /> 
+  <link href="./css/main.css" rel="stylesheet" /> 
+  <style type="text/css"></style> 
+  <script type="text/javascript" src="./js/login.js"></script> 
+ </head> 
+ <body> 
+  <!-- @header Start--> 
+  <div class="lay_top"> 
+   <div class="lay_top_inner" style="width: 688px;"> 
+    <h1 class="logo text_hide">服务方舟登陆</h1> 
+    <div class="lat_top_other"> 
+     <a href="http://connect.funzhou.cn/intro/login" title="什么是服务方舟登陆">方舟登陆</a> 
+     <span class="line">|</span> 
+     <a href="http://connect.funzhou.cn/oauthmanager" id="auth_manager_link" target="_blank" title="登录授权管理">授权管理</a> 
+     <span class="line">|</span> 
+     <a href="http://open.funzhou.cn" target="_blank" title="申请服务资源接入">申请接入</a> 
     </div> 
    </div> 
-    
-   <div class="qlogin" id="qlogin" style="display: none;"> 
-    <a title="上一页" class="prePage" id="prePage" href="javascript:void(0);"> <span class="preRow" tabindex="6"></span> </a> 
-    <div class="qlogin_show" id="qlogin_show" style="top: 25px;"> 
-     <div class="qlogin_list" id="qlogin_list" style="width: 304px;"> 
-      <span id="qr_area" class="qr_0"> <span class="qr_safe_tips">安全登录，防止被盗</span>
-      <img id="qrlogin_img" class="qrImg" alt="" src="./images/ptqrshow.png" />
-      <span class="qr_app_name"><span class="qr_safe_login">安全登录</span> 
-      	<a hidefocus="true" draggable="false" class="qr_info_link" href="javascript:void(0)" target="_blank">使用手机端扫描二维码</a>
-      </span>
-      </span> 
+  </div> 
+  <!-- @header End --> 
+  <div id="combine_page" style="width: 688px;"> 
+   <div class="page_login combine_page_children float_left border_right"> 
+    <div class="register" id="register" style="display: none;"> 
+     
+     <div class="register_header" class="register_header">
+			<a href="javascript:gologin();" title="返回" class="return">返回</a>
+			<h3>注册方舟账号</h3>
+		 </div>
+		 
+		 <div class="register_main register_main_simple">
+		  <form autocomplete="off" id="registerform" action="./register" method="POST">
+		   <p id="accountWrapper" class="pass-form-item pass-form-item-account" style="height: 45px;">
+		   	<label for="account" id="accountLabel" class="pass-label pass-label-account">手机/邮箱</label>
+		   	<input id="account" type="text" name="acname" class="pass-text-input pass-text-input-account" autocomplete="off" placeholder="手机/邮箱" onblur="onblurAccount()"  onkeyup="keyupAccount()"/>
+		   	<span id="account_clearbtn" class="pass-clearbtn pass-clearbtn-account" style="display: none; visibility: visible; opacity: 1;"></span>
+		   	<span id="accountError" class="pass-item-error pass-item-error-account" style="display:none;">请填写正确的手机/邮箱</span>
+		   </p>
+		   
+		   <p id="passwordWrapper" class="pass-form-item pass-form-item-password" style="height: 45px;">
+		   	<label for="password" id="passwordLabel" class="pass-label pass-label-password">密码</label>
+		   	<input id="password" type="password" name="password" class="pass-text-input pass-text-input-password" autocomplete="off" placeholder="密码" onblur="onblurPassword()" onkeyup="keyupPassword()" />
+		   	<span id="password_clearbtn" class="pass-clearbtn pass-clearbtn-password" style="display: none; visibility: hidden; opacity: 1;"></span>
+		   	<span id="passwordError" class="pass-item-error pass-item-error-password" style="display:none;">请重新设置,试试数字、字母、符号组合</span>
+		   </p>
+		  
+		   <p id="verifyCodeImgWrapper" class="pass-form-item pass-form-item-verifyCode" style="height: 45px;">
+		   	<label for="verifyCode" id="verifyCodeLabel" class="pass-label pass-label-verifyCode">验证码</label>
+		   	<input id="verifyCode" type="text" name="verifyCode" class="pass-text-input pass-text-input-verifyCode" autocomplete="off" placeholder="验证码" />
+		   	<span id="verifyCode_clearbtn" class="pass-clearbtn pass-clearbtn-verifyCode" style="display: none; visibility: hidden; opacity: 1;"></span>
+		   	<input id="verifyCodeSend" type="button" value="发送验证码" class="pass-button pass-button-verifyCodeSend" autocomplete="off"  onclick="CheckSendVerifyCode()" />
+		   	<span id="verifyCodeError" class="pass-item-error pass-item-error-verifyCode" style="display:none;">您输入的短信激活码有误</span>
+		   	
+		   </p>
+		   
+		   <p id="submitWrapper" class="pass-form-item pass-form-item-submit">
+		   	<input id="register_submit" type="submit" value="立即注册" class="btn"  onclick="validate_registerform()"/>
+		   </p>
+		   <p class="msg">
+      点击“立即注册”，即表示您同意并愿意遵守
+      <a href="javascript:void(0);" target="_blank" title="用户协议">用户协议</a>
+      和
+      <a href="javascript:void(0);" target="_blank" title="隐私政策">隐私政策</a>
+      </p>
+		  </form>
+		 </div>
+		 
+		</div>
+		<div class="forgetpwd" id="forgetpwd" style="display: none;"> 
+     <div class="forgetpwd_header" class="forgetpwd_header">
+			<a href="javascript:gologin();" title="返回" class="return">返回</a>
+			<h3>申请重置密码</h3>
+		 </div>
+		</div>
+    <div class="login" id="login"> 
+     <div id="login_header" class="login_header"> 
+      <div class="switch" id="switch"> 
+       <a class="switch_btn" hidefocus="true" id="switcher_qr_login" href="javascript:void(0);" onclick="switchpage(1)" tabindex="7">快速登录</a> 
+       <a class="switch_btn_focus" hidefocus="true" id="switcher_web_login" href="javascript:void(0);" onclick="switchpage(2)" tabindex="8">帐号密码登录</a>
+       <div class="switch_bottom" id="switch_bottom" style="left: 154px; width: 96px; position: absolute;"></div> 
+      </div> 
+     </div>
+     
+     <div class="qr_login" id="qr_login" style="display: none;"> 
+      <div class="qr_login_show" id="qr_login_show" style="top: 25px;"> 
+       <div class="qr_login_list" id="qr_login_list" style="width: 304px;"> 
+        <span id="qr_area" class="qr_0"> <span class="qr_safe_tips">安全登录，防止被盗</span> <img id="qrlogin_img" class="qrImg" alt="" src="./images/ptqrshow.png" /> <span class="qr_app_name"><span class="qr_safe_login">安全登录</span> <a hidefocus="true" draggable="false" class="qr_info_link" href="javascript:void(0)" target="_blank">使用手机端扫描二维码</a> </span> </span> 
+       </div> 
+      </div> 
+      <div class="bottom" id="bottom_qr_login" style="display: none;"> 
+       <a href="javascript:void(0);" class="link" onclick="goregister()">注册新帐号</a> 
+       <span class="dotted">|</span> 
+       <a class="link" id="feedback_qr_login" href="javascript:void(0);">使用帮助</a> 
+      </div> 
+     </div> 
+     <div class="web_login" id="web_login" style="display: block;"> 
+      <div class="login_form" style="margin-top: 50px;"> 
+       <form id="loginform" autocomplete="off" name="loginform" action="./login" method="post" target="_self" style="margin:0"> 
+        <div class="uinArea" id="uinArea"> 
+         <label class="input_tips" id="uin_tips" for="u" style="display: block;">支持账号名/邮箱/手机号登录</label> 
+         <div class="inputOuter"> 
+          <input type="text" class="inputstyle" id="u" name="acname" value="" tabindex="1" onfocus="onfocusU()" onblur="onblurU()" onkeyup="keyupU()" /> 
+          <a class="uin_del" id="uin_del" href="javascript:void(0);" onclick="uindel()"></a> 
+         </div>
+        </div> 
+        <div class="pwdArea" id="pwdArea"> 
+         <label class="input_tips" id="pwd_tips" for="p">密码</label> 
+         <div class="inputOuter"> 
+          <input type="password" class="inputstyle password" id="p" name="password" value="" maxlength="16" tabindex="2" onfocus="onfocusP()" onblur="onblurP()" onkeyup="keyupP()" onkeypress="detectCapsLockP(event)" /> 
+         </div> 
+         <div class="lock_tips" id="caps_lock_tips"> 
+          <span class="lock_tips_row"></span> 
+          <span>大写锁定已打开</span> 
+         </div> 
+        </div> 
+        <div class="verifyArea" id="verifyArea"> 
+         <div class="verifyinputArea" id="verifyinputArea"> 
+          <label class="input_tips" id="vc_tips" for="verifycode">验证码</label> 
+          <div class="inputOuter"> 
+           <input name="verifycode" type="text" class="inputstyle verifycode" id="verifycode" value="" tabindex="3" /> 
+          </div> 
+         </div> 
+         <div class="verifyimgArea" id="verifyimgArea"> 
+          <img class="verifyimg" id="verifyimg" title="看不清，换一张" /> 
+          <a tabindex="4" href="javascript:void(0);" class="verifyimg_tips">看不清，换一张</a> 
+         </div> 
+        </div> 
+        <div class="submit"> 
+         <a class="login_button" href="javascript:void(0);" hidefocus="true"><input type="submit" tabindex="6" value="授权并登录" class="btn" id="login_button" /></a> 
+        </div> 
+       </form> 
+      </div> 
+      <div class="bottom" id="bottom_web_login" style="display: block;"> 
+       <a href="javascript:void(0);" class="link" onclick="goforgetpwd()">忘了密码？</a> 
+       <span class="dotted">|</span> 
+       <a href="javascript:void(0);" class="link" onclick="goregister()">注册新帐号</a> 
+       <span class="dotted">|</span> 
+       <a class="link" id="feedback_web" href="javascript:void(0);">使用帮助</a> 
+      </div> 
+     </div>
+     </div>
+    </div> 
+   </div> 
+   <div class="page_accredit combine_page_children float_left"> 
+    <div class="lay_main" id="lay_main"> 
+     <div class="lay_accredit_con"> 
+      <p class="cnt_wording">授权该系统获得以下权限</p> 
+      <p class="app_site_wording"><a class="accredit_site" id="accredit_site_link" href="http://www.infobird.com/" target="_blank">讯鸟云计算科技</a>将获得以下权限：</p> 
+      <div class="accredit_info" id="accredit_info"> 
+       <ul class="accredit_info_op"> 
+        <li class="select_all_li"> <input type="checkbox" id="select_all" class="checkbox oauth_checkbox_all" hidefocus="true" checked="checked" /> <label class="oauth_item_title" for="select_all">全选</label> </li> 
+        <li> <input name="api_choose" hidefocus="true" type="checkbox" class="checkbox oauth_checkbox" id="item_80901010" value="80901010" title="默认授权 不可更改" checked="" disabled="" /> <label for="item_80901010" class="oauth_item_title">获得您openID</label> </li> 
+       </ul> 
+      </div> 
+      <div class="oauth_tips_div"> 
+       <p class="oauth_tips">授权后表明你已同意 <a href="javascript:void(0);" target="_blank">方舟登录服务协议</a></p> 
+      </div> 
      </div> 
     </div> 
-    <a title="下一页" class="nextPage" id="nextPage" href="javascript:void(0);"> <span class="nextRow" tabindex="7"></span> </a> 
    </div> 
-   <div class="web_qr_login" id="web_qr_login" style="display: block; height: 265px;"> 
-    <div class="web_qr_login_show" id="web_qr_login_show"> 
-     <div class="web_login" id="web_login"> 
-     
-      <div class="login_form" style="margin-top: 50px;">
-       <form id="loginform" autocomplete="off" name="loginform" action="./login" method="post" target="_self" style="margin:0">
-        <div class="uinArea" id="uinArea">
-         <label class="input_tips" id="uin_tips" for="u" style="display: block;">支持账号/邮箱/手机号登录</label>
-         <div class="inputOuter">
-          <input type="text" class="inputstyle" style="width: 268px; height: 40px;" id="u" name="u" value="" tabindex="1" onfocus="onfocusU()"  onblur="onblurU()"   onkeyup="keyupU()" /> 
-          <a class="uin_del" id="uin_del" href="javascript:void(0);" onclick="uindel()" ></a>
-         </div>
-         <ul class="email_list" id="email_list" style="display: none;"></ul>
-        </div>
-        <div class="pwdArea" id="pwdArea">
-         <label class="input_tips" id="pwd_tips" for="p">密码</label>
-         <div class="inputOuter">
-          <input type="password" class="inputstyle password" style="width: 268px; height: 40px;" id="p" name="p" value="" maxlength="16" tabindex="2" onfocus="onfocusP()"  onblur="onblurP()" onkeyup="keyupP()"  onkeypress="detectCapsLockP(event)" />
-         </div>
-         <div class="lock_tips" id="caps_lock_tips">
-          <span class="lock_tips_row"></span> 
-          <span>大写锁定已打开</span>
-         </div>
-        </div>
-        <div class="verifyArea" id="verifyArea">
-         <div class="verifyinputArea" id="verifyinputArea">
-          <label class="input_tips" id="vc_tips" for="verifycode">验证码</label>
-          <div class="inputOuter">
-           <input name="verifycode" type="text" class="inputstyle verifycode" id="verifycode" value="" tabindex="3" />
-          </div>
-         </div>
-         <div class="verifyimgArea" id="verifyimgArea">
-          <img class="verifyimg" id="verifyimg" title="看不清，换一张" /> 
-          <a tabindex="4" href="javascript:void(0);" class="verifyimg_tips">看不清，换一张</a>
-         </div>
-        </div>
-        <div class="submit">
-         <a class="login_button" href="javascript:void(0);" hidefocus="true"><input type="submit" tabindex="6" value="授权并登录" class="btn" id="login_button" /></a> 
-        </div>
-       </form>
-      </div>
-      <div class="bottom" id="bottom_web" style="display: block;">
-       <a href="./forgetpwd" class="link" id="forgetpwd" target="_blank">忘了密码？</a> 
-       <span class="dotted">|</span> 
-       <a href="./register" class="link" target="_blank">注册新帐号</a> 
-       <span class="dotted">|</span> 
-       <a class="link" id="feedback_web" href="javascript:void(0);" >使用帮助</a>
-      </div>
-       
-     </div>
-    </div>
-   </div> 
-   <div class="bottom hide" id="bottom_qlogin" style="display: none;">
-	   	 <a href="./register" class="link" target="_blank">注册新帐号</a> 
-	   	 <span class="dotted">|</span> 
-	   	 <a class="link" id="feedback_qlogin" href="javascript:void(0);">使用帮助</a>
-	   	</div>
-   
-
-<script>
-	function switchpage (a){
-		 switch (a) {
-        case 1:
-        	document.getElementById("switcher_qlogin").className ="switch_btn_focus";
-        	document.getElementById("switcher_plogin").className ="switch_btn";
-        	document.getElementById("switch_bottom").style.cssText ="left: 0px; width: 64px; position: absolute;";
-        	document.getElementById("qlogin").style.cssText ="display: block;";
-        	document.getElementById("web_qr_login").style.cssText ="display: none; height: 265px;";
-        	document.getElementById("bottom_qlogin").style.cssText ="display: block;";
-         break;
-        case 2:
-	        document.getElementById("switcher_qlogin").className ="switch_btn";
-	        document.getElementById("switcher_plogin").className ="switch_btn_focus";
-	        document.getElementById("switch_bottom").style.cssText ="left: 154px; width: 96px; position: absolute;";
-	        document.getElementById("qlogin").style.cssText ="display: none;";
-	        document.getElementById("web_qr_login").style.cssText ="display: block; height: 265px;";
-	        document.getElementById("bottom_qlogin").style.cssText ="display: none;";
-      	break;
-      }
-	}
-	function onfocusU (a){
-	 document.getElementById("uin_tips").className = "input_tips_focus";
-	 document.getElementById("u").parentNode.className = "inputOuter_focus";
-	}
-	function onblurU (a){
-	 document.getElementById("uin_tips").className = "input_tips";
-	 document.getElementById("u").parentNode.className = "inputOuter";
-	}
-	function onfocusP (a){
-	 document.getElementById("pwd_tips").className = "input_tips_focus";
-	 document.getElementById("p").parentNode.className = "inputOuter_focus";
-	}
-	function onblurP (a){
-	 document.getElementById("pwd_tips").className = "input_tips";
-	 document.getElementById("p").parentNode.className = "inputOuter";
-	}
-	
-	function keyupU () {
-		if (document.getElementById("u").value == "") {
-	    document.getElementById("uin_tips").className = "input_tips_focus";
-	    document.getElementById("uin_del").style.cssText ="display: none;";
-	    document.getElementById("uin_tips").style.cssText ="display: block;";
-		} else {
-			document.getElementById("uin_del").style.cssText ="display: block;";
-			document.getElementById("uin_tips").style.cssText ="display: none;";
-		}
-  }
-  function uindel (){
-  	document.getElementById("uin_del").style.cssText ="display: none;";
-    document.getElementById("uin_tips").style.cssText ="display: block;";
-    document.getElementById("uin_tips").className = "input_tips";
-	  document.getElementById("u").parentNode.className = "inputOuter";
-	  document.getElementById("u").value="";
-  }
-	function detectCapsLockP(c) {
-        var b = c.keyCode || c.which;
-        var a = c.shiftKey || (b == 16) || false;
-        if (((b >= 65 && b <= 90) && !a) || ((b >= 97 && b <= 122) && a)) {
-            document.getElementById("caps_lock_tips").style.cssText ="display: block;";
-        } else {
-            document.getElementById("caps_lock_tips").style.cssText ="display: none;";
-        }
-        document.getElementById("pwd_tips").style.cssText ="display: none;";
-  }
-  function keyupP () {
-		if (document.getElementById("p").value == "") {
-	    document.getElementById("pwd_tips").className = "input_tips_focus";
-	    document.getElementById("pwd_tips").style.cssText ="display: block;";
-		} else {
-			document.getElementById("pwd_tips").style.cssText ="display: none;";
-		}
-  }
-  
-</script>
+  </div>  
  </body>
 </html>
