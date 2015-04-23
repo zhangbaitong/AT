@@ -37,10 +37,11 @@ func httpPost() {
 	//data["containerName"]="tomzhao"
 	//post_data := RequestData{Version: "1.0", Method: "/auth/logout", Params: "{\"ac_name\":\"tomzhao\",\"ac_password\":\"111111\"}"}
 	//post_data := RequestData{Version: "1.0", Method: "/auth/getacid", Params: "{\"openid\":\"tomzhao\"}"}
-	post_data := RequestData{Version: "1.0", Method: "/auth/changepw", Params: "{\"ac_name\":\"tomzhao\",\"old_password\":\"111111\",\"new_password\":\"222222\"}"}
+	//post_data := RequestData{Version: "1.0", Method: "/auth/changepw", Params: "{\"ac_name\":\"tomzhao\",\"old_password\":\"111111\",\"new_password\":\"222222\"}"}
+	post_data := RequestData{Version: "1.0", Method: "/auth/changepw", Params: "{\"user_name\":\"tomzhao\",\"password\":\"111111\"}"}
 	strPostData, _ := json.Marshal(post_data)
 	strTemp := "request=" + string(strPostData)
-	resp, err := http.Post("http://127.0.0.1:8080/auth/changepw",
+	resp, err := http.Post("http://127.0.0.1:8080/auth/login",
 		"application/x-www-form-urlencoded", strings.NewReader(strTemp))
 	//"application/json",strings.NewReader(strTemp))
 	if err != nil {
@@ -48,6 +49,8 @@ func httpPost() {
 	}
 
 	defer resp.Body.Close()
+	// body, err := ioutil.ReadAll(resp.Body)
+	fmt.Println("-----------", resp.Header.Get("Set-Cookie"))
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		// handle error
