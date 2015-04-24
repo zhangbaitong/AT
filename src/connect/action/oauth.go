@@ -1,17 +1,35 @@
 package action
 
 import (
+	"common"
+	"errors"
 	"fmt"
 	"github.com/RangelReale/osin"
-	"github.com/RangelReale/osin/example"
+	"github.com/dchest/authcookie"
 	"github.com/julienschmidt/httprouter"
+	"github.com/unrolled/render"
 	"net/http"
 	"oauth"
+	"time"
 )
 
-type OAuth struct {
-	Server *osin.Server
-}
+type (
+	OAuth struct {
+		Server *osin.Server
+		View   *render.Render
+	}
+
+	User struct {
+		Acname   string
+		Password string
+	}
+)
+
+const (
+	//cookie加密、解密使用
+	KEY        string = "QAZWERT4556"
+	COOKIENAME string = "MNBVCXZ"
+)
 
 func NewOAuth() *OAuth {
 
@@ -24,29 +42,58 @@ func NewOAuth() *OAuth {
 
 	oauth := OAuth{
 		Server: osin.NewServer(sconfig, oauth.NewATStorage()),
+		View:   render.New(),
 	}
 	return &oauth
 }
 
-func (oauth *OAuth) Authorize(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	resp := oauth.Server.NewResponse()
-	defer resp.Close()
+func (oauth *OAuth) GetAuthorize(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	acname := oauth.Logged(w, r)
+	if acname != "" {
+		//已经登录，则返回页面，出现 授权按钮+权限列表
+		oauth.View.HTML(w, http.StatusOK, "oauth", nil)
+	} else {
+		//未登录，则返回页面，出现 用户名密码框+授权并登陆按钮+权限列表
+		oauth.View.HTML(w, http.StatusOK, "oauth", nil)
+	}
 
-	if ar := oauth.Server.HandleAuthorizeRequest(resp, r); ar != nil {
-		if !example.HandleLoginPage(ar, w, r) {
+}
+
+func (oauth *OAuth) PostAuthorize(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	acname := oauth.Logged(w, r)
+	if acname == "" {
+		//使用提交的表单登陆
+		acname, _ := oauth.Login(w, r)
+		//登陆失败
+		if acname == "" {
+			//返回页面，出现 登陆失败提示，用户名密码框+授权并登陆按钮+权限列表
+			oauth.View.HTML(w, http.StatusOK, "oauth", nil)
 			return
 		}
-		ar.UserData = struct{ Login string }{Login: "test"}
+	}
+
+	//用户登陆成功，并确认授权，则进行下一步,根据请求,发放code 或token
+	resp := oauth.Server.NewResponse()
+	defer resp.Close()
+	ar := oauth.Server.HandleAuthorizeRequest(resp, r)
+	if ar != nil {
+		//发放code 或token ,附加到redirect_uri后，并跳转
+		//存储acname，acid,rsid,clientid,clientSecret等必要信息
+		ar.UserData = struct{ Acname string }{Acname: acname}
 		ar.Authorized = true
 		oauth.Server.FinishAuthorizeRequest(resp, r, ar)
+		//通过redirect_uri 返回约定
 	}
-	if resp.IsError && resp.InternalError != nil {
-		fmt.Printf("ERROR: %s\n", resp.InternalError)
+
+	//调用格式错误（redirect_uri、state缺失），或clientid未通过
+	//如有redirect_uri 返回错误约定 并跳转到改redirect_uri
+	if resp.IsError {
+		if resp.InternalError != nil {
+			//w.Write([]byte(resp.InternalError))
+		} else {
+			w.Write([]byte("未知错误"))
+		}
 	}
-	if !resp.IsError {
-		resp.Output["custom_parameter"] = 187723
-	}
-	osin.OutputJSON(resp, w, r)
 }
 
 func (oauth *OAuth) Token(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -60,8 +107,13 @@ func (oauth *OAuth) Token(w http.ResponseWriter, r *http.Request, _ httprouter.P
 		case osin.REFRESH_TOKEN:
 			ar.Authorized = true
 		case osin.PASSWORD:
-			if ar.Username == "test" && ar.Password == "test" {
+			user := User{Acname: ar.Username, Password: ar.Password}
+			ok := oauth.LoginQuery(&user)
+			if ok {
+				oauth.GenerateCookie(w, r, user.Acname, 1)
 				ar.Authorized = true
+			} else {
+				//通过redirect_uri 返回错误约定 并跳转到改redirect_uri
 			}
 		case osin.CLIENT_CREDENTIALS:
 			ar.Authorized = true
@@ -71,22 +123,69 @@ func (oauth *OAuth) Token(w http.ResponseWriter, r *http.Request, _ httprouter.P
 			}
 		}
 		oauth.Server.FinishAccessRequest(resp, r, ar)
+		//通过redirect_uri 返回约定
 	}
-	if resp.IsError && resp.InternalError != nil {
-		fmt.Printf("ERROR: %s\n", resp.InternalError)
+
+	//调用格式错误（redirect_uri、state缺失），或clientid未通过
+	//如有redirect_uri 返回错误约定 并跳转到改redirect_uri
+	if resp.IsError {
+		if resp.InternalError != nil {
+			//w.Write([]byte(resp.InternalError))
+		} else {
+			w.Write([]byte("未知错误"))
+		}
 	}
-	if !resp.IsError {
-		resp.Output["custom_parameter"] = 19923
-	}
-	osin.OutputJSON(resp, w, r)
 }
 
-func (oauth *OAuth) Info(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	resp := oauth.Server.NewResponse()
-	defer resp.Close()
-
-	if ir := oauth.Server.HandleInfoRequest(resp, r); ir != nil {
-		oauth.Server.FinishInfoRequest(resp, r, ir)
+func (oauth *OAuth) Logged(w http.ResponseWriter, req *http.Request) string {
+	cookie, err := req.Cookie(COOKIENAME)
+	if err == nil {
+		return authcookie.Login(cookie.Value, []byte(KEY))
 	}
-	osin.OutputJSON(resp, w, r)
+	return ""
+}
+
+func (oauth *OAuth) Login(w http.ResponseWriter, req *http.Request) (string, error) {
+	acname := req.FormValue("acname")
+	password := req.FormValue("password")
+	if acname == "" || password == "" {
+		return "", errors.New("未输入用户名和密码！")
+	}
+	user := User{Acname: acname, Password: password}
+	ok := oauth.LoginQuery(&user)
+	if ok {
+		oauth.GenerateCookie(w, req, user.Acname, 1)
+		return acname, nil
+	} else {
+		return "", errors.New("用户名或密码错误！")
+	}
+}
+
+//登录插入
+func (oauth *OAuth) LoginQuery(user *User) bool {
+	strSQL := fmt.Sprintf("select count(ac_name) from account_tab where (ac_name='%s' or email='%s' or mobile='%s') and ac_password='%s'", user.Acname, user.Acname, user.Acname, user.Password)
+	rows, err := common.GetDB().Query(strSQL)
+	defer rows.Close()
+	if err != nil {
+		return false
+	} else {
+		var nCount int
+		for rows.Next() {
+			rows.Scan(&nCount)
+		}
+
+		if nCount == 0 {
+			return false
+		}
+	}
+	return true
+}
+
+//生成cookie，放到reponse对象
+func (oauth *OAuth) GenerateCookie(w http.ResponseWriter, r *http.Request, userNmae string, number int) {
+	timeLength := 24 * time.Hour
+	cookieValue := authcookie.NewSinceNow(userNmae, timeLength, []byte(KEY))
+	expire := time.Now().Add(timeLength)
+	cookie := http.Cookie{Name: COOKIENAME, Value: cookieValue, Path: "/", Expires: expire, MaxAge: 86400}
+	http.SetCookie(w, &cookie)
 }

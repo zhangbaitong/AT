@@ -1,8 +1,10 @@
 package action
 
 import (
+	"common"
+	"fmt"
+	"github.com/dchest/authcookie"
 	"github.com/julienschmidt/httprouter"
-	"log"
 	"net/http"
 )
 
@@ -25,7 +27,7 @@ func (m *Me) Get(w http.ResponseWriter, req *http.Request, ps httprouter.Params)
 	if err != nil {
 		fmt.Println("me.go cookie decryption error")
 	}
-	acid := getAcid(login)
+	acid := getAcId(login)
 	client_id := "TEST"
 	openId := getOpenId(client_id, acid)
 	result := "client_id=" + client_id + "&openid=" + openId
@@ -37,7 +39,7 @@ func getAcId(acName string) int {
 	rows, err := common.GetDB().Query(strSQL)
 	defer rows.Close()
 	if err != nil {
-		return ""
+		return -1
 	} else {
 		var acid int
 		for rows.Next() {
@@ -59,7 +61,6 @@ func getOpenId(clientId string, acid int) string {
 		for rows.Next() {
 			rows.Scan(&openId)
 		}
-
-		return openId
+		return fmt.Sprintf("%d", openId)
 	}
 }

@@ -9,7 +9,6 @@ import (
 	"github.com/RangelReale/osin/example"
 	"net/http"
 	"net/url"
-	"oauth"
 )
 
 func main() {
@@ -17,8 +16,8 @@ func main() {
 	cfg.AllowGetAccessRequest = true
 	cfg.AllowClientSecretInParams = true
 
-	// server := osin.NewServer(cfg, example.NewTestStorage())
-	server := osin.NewServer(cfg, oauth.NewATStorage())
+	server := osin.NewServer(cfg, example.NewTestStorage())
+	//server := osin.NewServer(cfg, oauth.NewATStorage())
 
 	// Authorization code endpoint
 	http.HandleFunc("/authorize", func(w http.ResponseWriter, r *http.Request) {
