@@ -49,7 +49,7 @@
       <h3>确认授权</h3> 
      </div> 
      <div class="authorize_main authorize_main_simple"> 
-      <form autocomplete="off" id="registerform" action="./authorize" method="POST"> 
+      <form autocomplete="off" id="registerform" action="{{.RequestURI}}" method="POST"> 
        <p id="submitWrapper" class="pass-form-item pass-form-item-submit"> <input id="register_submit" type="submit" value="同意授权" class="btn" /> </p> 
       </form> 
      </div> 
@@ -82,7 +82,7 @@
      </div> 
      <div class="web_login" id="web_login" style="display: block;"> 
       <div class="login_form" style="margin-top: 50px;"> 
-       <form id="loginform" autocomplete="off" name="loginform" action="./authorize" method="post" target="_self" style="margin:0"> 
+       <form id="loginform" autocomplete="off" name="loginform" action="{{.RequestURI}}" method="post" target="_self" style="margin:0"> 
         <div class="uinArea" id="uinArea"> 
          <label class="input_tips" id="uin_tips" for="u" style="display: block;">支持账号名/邮箱/手机号登录</label> 
          <div class="inputOuter"> 

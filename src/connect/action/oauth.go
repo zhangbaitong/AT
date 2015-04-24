@@ -51,10 +51,11 @@ func (oauth *OAuth) GetAuthorize(w http.ResponseWriter, r *http.Request, _ httpr
 	acname := oauth.Logged(w, r)
 	if acname != "" {
 		//已经登录，则返回页面，出现 授权按钮+权限列表
-		oauth.View.HTML(w, http.StatusOK, "oauth", map[string]string{"AuthorizeDisplay": "block", "LoginDisplay": "none"})
+		oauth.View.HTML(w, http.StatusOK, "oauth", map[string]string{"AuthorizeDisplay": "block", "LoginDisplay": "none", "RequestURI": r.RequestURI})
+
 	} else {
 		//未登录，则返回页面，出现 用户名密码框+授权并登陆按钮+权限列表
-		oauth.View.HTML(w, http.StatusOK, "oauth", map[string]string{"AuthorizeDisplay": "none", "LoginDisplay": "block"})
+		oauth.View.HTML(w, http.StatusOK, "oauth", map[string]string{"AuthorizeDisplay": "block", "LoginDisplay": "none", "RequestURI": r.RequestURI})
 	}
 
 }
@@ -90,6 +91,7 @@ func (oauth *OAuth) PostAuthorize(w http.ResponseWriter, r *http.Request, _ http
 	if resp.IsError {
 		if resp.InternalError != nil {
 			//w.Write([]byte(resp.InternalError))
+			fmt.Println("错误：", resp.InternalError)
 		} else {
 			w.Write([]byte("未知错误"))
 		}
