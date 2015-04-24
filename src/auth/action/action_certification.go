@@ -172,10 +172,10 @@ func login_query(login *StructLogin) (ok bool) {
 
 	strSQL := fmt.Sprintf("select count(ac_name) from account_tab where (ac_name='%s' or email='%s' or mobile='%s') and ac_password='%s'", login.User_name, login.User_name, login.User_name, login.Password)
 	rows, err := mydb.Query(strSQL)
-	defer rows.Close()
 	if err != nil {
 		return false
 	} else {
+		defer rows.Close()
 		var nCount int
 		for rows.Next() {
 			rows.Scan(&nCount)
@@ -281,10 +281,10 @@ func isFieldExist(name string, value string) bool {
 
 	strSQL := fmt.Sprintf("select count(ac_name) from account_tab where %s='%s' ", name, value)
 	rows, err := mydb.Query(strSQL)
-	defer rows.Close()
 	if err != nil {
 		return false
 	} else {
+		defer rows.Close()
 		var nCount int
 		for rows.Next() {
 			rows.Scan(&nCount)
@@ -331,10 +331,10 @@ func GetAcidByOpenid(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 
 	strSQL := fmt.Sprintf("select acid from openid_tab where openid='%s'", strOpenid)
 	rows, err := mydb.Query(strSQL)
-	defer rows.Close()
 	if err != nil {
 		strBody, _ = setParams("/auth/getacid", 1, "database error !", "")
 	} else {
+		defer rows.Close()
 		var nAcid int
 		for rows.Next() {
 			rows.Scan(&nAcid)
@@ -421,10 +421,10 @@ func ChangePassword(w http.ResponseWriter, r *http.Request, ps httprouter.Params
 	defer common.FreeDB(mydb)
 
 	rows, err := mydb.Query(strSQL)
-	defer rows.Close()
 	if err != nil {
 		strBody, _ = setParams("/auth/changepw", 1, "database error !", "")
 	} else {
+		defer rows.Close()
 		var nCount int
 		for rows.Next() {
 			rows.Scan(&nCount)
