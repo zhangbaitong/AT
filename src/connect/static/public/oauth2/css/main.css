@@ -316,7 +316,7 @@ input::-ms-clear,input::-ms-reveal {
 	border-bottom: 2px solid #848484
 }
 
-.register_header,.forgetpwd_header {
+.register_header,.forgetpwd_header,.authorize_header {
   height: 39px;
   line-height: 39px;
   position: relative;
@@ -337,12 +337,12 @@ input::-ms-clear,input::-ms-reveal {
   font-size: 14px;
 }
 
-.register_header h3,.forgetpwd_header h3 {
+.register_header h3,.forgetpwd_header h3,.authorize_header  h3{
   font-size: 16px;
   text-align: center;
 }
 
-.register_main ,.forgetpwd_main{
+.register_main ,.forgetpwd_main,.authorize_main{
   width: 365px;
   padding: 10px 25px 20px;
   position: relative;
@@ -350,7 +350,7 @@ input::-ms-clear,input::-ms-reveal {
   margin-left: -192px;
 }
 
-.register_main_simple,.forgetpwd_main_simple {
+.register_main_simple,.forgetpwd_main_simple,.authorize_main_simple {
   padding-top: 30px;
 }
 

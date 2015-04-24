@@ -51,10 +51,10 @@ func (oauth *OAuth) GetAuthorize(w http.ResponseWriter, r *http.Request, _ httpr
 	acname := oauth.Logged(w, r)
 	if acname != "" {
 		//已经登录，则返回页面，出现 授权按钮+权限列表
-		oauth.View.HTML(w, http.StatusOK, "oauth", nil)
+		oauth.View.HTML(w, http.StatusOK, "oauth", map[string]string{"AuthorizeDisplay": "block", "LoginDisplay": "none"})
 	} else {
 		//未登录，则返回页面，出现 用户名密码框+授权并登陆按钮+权限列表
-		oauth.View.HTML(w, http.StatusOK, "oauth", nil)
+		oauth.View.HTML(w, http.StatusOK, "oauth", map[string]string{"AuthorizeDisplay": "none", "LoginDisplay": "block"})
 	}
 
 }
