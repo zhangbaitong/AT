@@ -16,20 +16,26 @@ var (
 	Conn   *sql.DB
 	Logger *log.Logger
 	pool   *redis.Pool
+	dbpool *DbPool
 )
 
 //Get db connection from mysql
 func GetDB() (db *sql.DB) {
-	if Conn == nil {
-		db, err := sql.Open("mysql", "root:111111@tcp(117.78.19.76:3306)/at_db")
-		if err != nil {
-			fmt.Println("连接数据库失败")
-			fmt.Println(err)
-			return nil
-		}
-		Conn = db
+	if dbpool == nil {
+		dbpool = CreateDbPool(20, "mysql", "tomzhao:111111@tcp(127.0.0.1:3306)/at_db",true)
 	}
-	return Conn
+
+	conn, err := dbpool.GetConn()
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	return conn	
+}
+
+func FreeDB(db *sql.DB) {
+	dbpool.PutConn(db)
 }
 
 //get uuid lik a227cedf-e806-11e4-8666-3c075419d855
