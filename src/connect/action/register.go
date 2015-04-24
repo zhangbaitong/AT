@@ -45,7 +45,13 @@ func (register *Register) Post(w http.ResponseWriter, req *http.Request, _ httpr
 }
 
 func register_insert(ac *Account) (ok bool) {
-	tx, err := common.GetDB().Begin()
+	mydb := common.GetDB()
+	if mydb == nil {
+		return false
+	}
+	defer common.FreeDB(mydb)
+
+	tx, err := mydb.Begin()
 	if err != nil {
 		fmt.Println(err)
 		return false
