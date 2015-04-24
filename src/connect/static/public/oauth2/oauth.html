@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-cn">
  <head> 
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
@@ -28,82 +28,46 @@
   <!-- @header End --> 
   <div id="combine_page" style="width: 688px;"> 
    <div class="page_login combine_page_children float_left border_right"> 
-    
     <div class="register" id="register" style="display: none;"> 
-     
-     <div class="register_header" class="register_header">
-			<a href="javascript:gologin();" title="返回" class="return">返回</a>
-			<h3>注册方舟账号</h3>
-		 </div>
-		 
-		 <div class="register_main register_main_simple">
-		  <form autocomplete="off" id="registerform" action="./register" method="POST">
-		   <p id="accountWrapper" class="pass-form-item pass-form-item-account" style="height: 45px;">
-		   	<label for="account" id="accountLabel" class="pass-label pass-label-account">手机/邮箱</label>
-		   	<input id="account" type="text" name="acname" class="pass-text-input pass-text-input-account" autocomplete="off" placeholder="手机/邮箱" onblur="onblurAccount()"  onkeyup="keyupAccount()"/>
-		   	<span id="account_clearbtn" class="pass-clearbtn pass-clearbtn-account" style="display: none; visibility: visible; opacity: 1;"></span>
-		   	<span id="accountError" class="pass-item-error pass-item-error-account" style="display:none;">请填写正确的手机/邮箱</span>
-		   </p>
-		   
-		   <p id="passwordWrapper" class="pass-form-item pass-form-item-password" style="height: 45px;">
-		   	<label for="password" id="passwordLabel" class="pass-label pass-label-password">密码</label>
-		   	<input id="password" type="password" name="password" class="pass-text-input pass-text-input-password" autocomplete="off" placeholder="密码" onblur="onblurPassword()" onkeyup="keyupPassword()" />
-		   	<span id="password_clearbtn" class="pass-clearbtn pass-clearbtn-password" style="display: none; visibility: hidden; opacity: 1;"></span>
-		   	<span id="passwordError" class="pass-item-error pass-item-error-password" style="display:none;">请重新设置,试试数字、字母、符号组合</span>
-		   </p>
-		  
-		   <p id="verifyCodeImgWrapper" class="pass-form-item pass-form-item-verifyCode" style="height: 45px;">
-		   	<label for="verifyCode" id="verifyCodeLabel" class="pass-label pass-label-verifyCode">验证码</label>
-		   	<input id="verifyCode" type="text" name="verifyCode" class="pass-text-input pass-text-input-verifyCode" autocomplete="off" placeholder="验证码" />
-		   	<span id="verifyCode_clearbtn" class="pass-clearbtn pass-clearbtn-verifyCode" style="display: none; visibility: hidden; opacity: 1;"></span>
-		   	<input id="verifyCodeSend" type="button" value="发送验证码" class="pass-button pass-button-verifyCodeSend" autocomplete="off"  onclick="CheckSendVerifyCode()" />
-		   	<span id="verifyCodeError" class="pass-item-error pass-item-error-verifyCode" style="display:none;">您输入的短信激活码有误</span>
-		   	
-		   </p>
-		   
-		   <p id="submitWrapper" class="pass-form-item pass-form-item-submit">
-		   	<input id="register_submit" type="submit" value="立即注册" class="btn"  onclick="validate_registerform()"/>
-		   </p>
-		   <p class="msg">
-      点击“立即注册”，即表示您同意并愿意遵守
-      <a href="javascript:void(0);" target="_blank" title="用户协议">用户协议</a>
-      和
-      <a href="javascript:void(0);" target="_blank" title="隐私政策">隐私政策</a>
-      </p>
-		  </form>
-		 </div>
-		 
-		</div>
-		<div class="authorize" id="authorize" style="display: {{.AuthorizeDisplay}};">
-			 <div class="authorize_header" class="authorize_header">
-				<a href="javascript:gologin();" title="返回" class="return">返回</a>
-				<h3>确认授权</h3>
-			 </div>
-			 <div class="authorize_main authorize_main_simple">
-				  <form autocomplete="off" id="registerform" action="." method="POST">
-				   <p id="submitWrapper" class="pass-form-item pass-form-item-submit">
-				   	<input id="register_submit" type="submit" value="同意授权" class="btn" />
-				   </p>
-				  </form>
-			  </div>
-		</div>
-		
-		<div class="forgetpwd" id="forgetpwd" style="display: none;"> 
-     <div class="forgetpwd_header" class="forgetpwd_header">
-			<a href="javascript:gologin();" title="返回" class="return">返回</a>
-			<h3>申请重置密码</h3>
-		 </div>
-		</div>
-		
+     <div class="register_header"> 
+      <a href="javascript:gologin();" title="返回" class="return">返回</a> 
+      <h3>注册方舟账号</h3> 
+     </div> 
+     <div class="register_main register_main_simple"> 
+      <form autocomplete="off" id="registerform" action="./register" method="POST"> 
+       <p id="accountWrapper" class="pass-form-item pass-form-item-account" style="height: 45px;"> <label for="account" id="accountLabel" class="pass-label pass-label-account">手机/邮箱</label> <input id="account" type="text" name="acname" class="pass-text-input pass-text-input-account" autocomplete="off" placeholder="手机/邮箱" onblur="onblurAccount()" onkeyup="keyupAccount()" /> <span id="account_clearbtn" class="pass-clearbtn pass-clearbtn-account" style="display: none; visibility: visible; opacity: 1;"></span> <span id="accountError" class="pass-item-error pass-item-error-account" style="display:none;">请填写正确的手机/邮箱</span> </p> 
+       <p id="passwordWrapper" class="pass-form-item pass-form-item-password" style="height: 45px;"> <label for="password" id="passwordLabel" class="pass-label pass-label-password">密码</label> <input id="password" type="password" name="password" class="pass-text-input pass-text-input-password" autocomplete="off" placeholder="密码" onblur="onblurPassword()" onkeyup="keyupPassword()" /> <span id="password_clearbtn" class="pass-clearbtn pass-clearbtn-password" style="display: none; visibility: hidden; opacity: 1;"></span> <span id="passwordError" class="pass-item-error pass-item-error-password" style="display:none;">请重新设置,试试数字、字母、符号组合</span> </p> 
+       <p id="verifyCodeImgWrapper" class="pass-form-item pass-form-item-verifyCode" style="height: 45px;"> <label for="verifyCode" id="verifyCodeLabel" class="pass-label pass-label-verifyCode">验证码</label> <input id="verifyCode" type="text" name="verifyCode" class="pass-text-input pass-text-input-verifyCode" autocomplete="off" placeholder="验证码" /> <span id="verifyCode_clearbtn" class="pass-clearbtn pass-clearbtn-verifyCode" style="display: none; visibility: hidden; opacity: 1;"></span> <input id="verifyCodeSend" type="button" value="发送验证码" class="pass-button pass-button-verifyCodeSend" autocomplete="off" onclick="CheckSendVerifyCode()" /> <span id="verifyCodeError" class="pass-item-error pass-item-error-verifyCode" style="display:none;">您输入的短信激活码有误</span> </p> 
+       <p id="submitWrapper" class="pass-form-item pass-form-item-submit"> <input id="register_submit" type="submit" value="立即注册" class="btn" onclick="validate_registerform()" /> </p> 
+       <p class="msg"> 点击“立即注册”，即表示您同意并愿意遵守 <a href="javascript:void(0);" target="_blank" title="用户协议">用户协议</a> 和 <a href="javascript:void(0);" target="_blank" title="隐私政策">隐私政策</a> </p> 
+      </form> 
+     </div> 
+    </div> 
+    <div class="authorize" id="authorize" style="display: {{.AuthorizeDisplay}};"> 
+     <div class="authorize_header"> 
+       
+      <h3>确认授权</h3> 
+     </div> 
+     <div class="authorize_main authorize_main_simple"> 
+      <form autocomplete="off" id="registerform" action="./authorize" method="POST"> 
+       <p id="submitWrapper" class="pass-form-item pass-form-item-submit"> <input id="register_submit" type="submit" value="同意授权" class="btn" /> </p> 
+      </form> 
+     </div> 
+    </div> 
+    <div class="forgetpwd" id="forgetpwd" style="display: none;"> 
+     <div class="forgetpwd_header"> 
+      <a href="javascript:gologin();" title="返回" class="return">返回</a> 
+      <h3>申请重置密码</h3> 
+     </div> 
+    </div> 
     <div class="login" id="login" style="display:  {{.LoginDisplay}};"> 
      <div id="login_header" class="login_header"> 
       <div class="switch" id="switch"> 
        <a class="switch_btn" hidefocus="true" id="switcher_qr_login" href="javascript:void(0);" onclick="switchpage(1)" tabindex="7">快速登录</a> 
-       <a class="switch_btn_focus" hidefocus="true" id="switcher_web_login" href="javascript:void(0);" onclick="switchpage(2)" tabindex="8">帐号密码登录</a>
+       <a class="switch_btn_focus" hidefocus="true" id="switcher_web_login" href="javascript:void(0);" onclick="switchpage(2)" tabindex="8">帐号密码登录</a> 
        <div class="switch_bottom" id="switch_bottom" style="left: 154px; width: 96px; position: absolute;"></div> 
       </div> 
-     </div>
-     
+     </div> 
      <div class="qr_login" id="qr_login" style="display: none;"> 
       <div class="qr_login_show" id="qr_login_show" style="top: 25px;"> 
        <div class="qr_login_list" id="qr_login_list" style="width: 304px;"> 
@@ -118,13 +82,13 @@
      </div> 
      <div class="web_login" id="web_login" style="display: block;"> 
       <div class="login_form" style="margin-top: 50px;"> 
-       <form id="loginform" autocomplete="off" name="loginform" action="." method="post" target="_self" style="margin:0"> 
+       <form id="loginform" autocomplete="off" name="loginform" action="./authorize" method="post" target="_self" style="margin:0"> 
         <div class="uinArea" id="uinArea"> 
          <label class="input_tips" id="uin_tips" for="u" style="display: block;">支持账号名/邮箱/手机号登录</label> 
          <div class="inputOuter"> 
           <input type="text" class="inputstyle" id="u" name="acname" value="" tabindex="1" onfocus="onfocusU()" onblur="onblurU()" onkeyup="keyupU()" /> 
           <a class="uin_del" id="uin_del" href="javascript:void(0);" onclick="uindel()"></a> 
-         </div>
+         </div> 
         </div> 
         <div class="pwdArea" id="pwdArea"> 
          <label class="input_tips" id="pwd_tips" for="p">密码</label> 
@@ -160,27 +124,26 @@
        <span class="dotted">|</span> 
        <a class="link" id="feedback_web" href="javascript:void(0);">使用帮助</a> 
       </div> 
-     </div>
-     </div>
-    </div> 
-   </div> 
-   <div class="page_accredit combine_page_children float_left"> 
-    <div class="lay_main" id="lay_main"> 
-     <div class="lay_accredit_con"> 
-      <p class="cnt_wording">授权该系统获得以下权限</p> 
-      <p class="app_site_wording"><a class="accredit_site" id="accredit_site_link" href="http://www.infobird.com/" target="_blank">讯鸟云计算科技</a>将获得以下权限：</p> 
-      <div class="accredit_info" id="accredit_info"> 
-       <ul class="accredit_info_op"> 
-        <li class="select_all_li"> <input type="checkbox" id="select_all" class="checkbox oauth_checkbox_all" hidefocus="true" checked="checked" /> <label class="oauth_item_title" for="select_all">全选</label> </li> 
-        <li> <input name="api_choose" hidefocus="true" type="checkbox" class="checkbox oauth_checkbox" id="item_80901010" value="80901010" title="默认授权 不可更改" checked="" disabled="" /> <label for="item_80901010" class="oauth_item_title">获得您openID</label> </li> 
-       </ul> 
-      </div> 
-      <div class="oauth_tips_div"> 
-       <p class="oauth_tips">授权后表明你已同意 <a href="javascript:void(0);" target="_blank">方舟登录服务协议</a></p> 
-      </div> 
      </div> 
     </div> 
    </div> 
-  </div>  
+  </div> 
+  <div class="page_accredit combine_page_children float_left"> 
+   <div class="lay_main" id="lay_main"> 
+    <div class="lay_accredit_con"> 
+     <p class="cnt_wording">授权该系统获得以下权限</p> 
+     <p class="app_site_wording"><a class="accredit_site" id="accredit_site_link" href="http://www.infobird.com/" target="_blank">讯鸟云计算科技</a>将获得以下权限：</p> 
+     <div class="accredit_info" id="accredit_info"> 
+      <ul class="accredit_info_op"> 
+       <li class="select_all_li"> <input type="checkbox" id="select_all" class="checkbox oauth_checkbox_all" hidefocus="true" checked="checked" /> <label class="oauth_item_title" for="select_all">全选</label> </li> 
+       <li> <input name="api_choose" hidefocus="true" type="checkbox" class="checkbox oauth_checkbox" id="item_80901010" value="80901010" title="默认授权 不可更改" checked="" disabled="" /> <label for="item_80901010" class="oauth_item_title">获得您openID</label> </li> 
+      </ul> 
+     </div> 
+     <div class="oauth_tips_div"> 
+      <p class="oauth_tips">授权后表明你已同意 <a href="javascript:void(0);" target="_blank">方舟登录服务协议</a></p> 
+     </div> 
+    </div> 
+   </div> 
+  </div>   
  </body>
 </html>
