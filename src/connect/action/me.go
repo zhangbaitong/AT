@@ -29,38 +29,55 @@ func (m *Me) Get(w http.ResponseWriter, req *http.Request, ps httprouter.Params)
 	}
 	acid := getAcId(login)
 	client_id := "TEST"
-	openId := getOpenId(client_id, acid)
-	result := "client_id=" + client_id + "&openid=" + openId
+
+	result := "client_id=" + "&openid="
+
+	if acid != -1 && client_id != "" {
+		openId := getOpenId(client_id, acid)
+		result = "client_id=" + client_id + "&openid=" + openId
+	}
+
 	w.Write([]byte(result))
 }
 
 func getAcId(acName string) int {
 	strSQL := fmt.Sprintf("select acid from account_tab where ac_name='%s' limit 1", acName)
-	rows, err := common.GetDB().Query(strSQL)
-	defer rows.Close()
+	mydb := common.GetDB()
+	if mydb == nil {
+		fmt.Println("get db connection error")
+		return -1
+	}
+	defer common.FreeDB(mydb)
+	rows, err := mydb.Query(strSQL)
 	if err != nil {
 		return -1
 	} else {
+		defer rows.Close()
 		var acid int
 		for rows.Next() {
 			rows.Scan(&acid)
 		}
-
 		return acid
 	}
 }
 
 func getOpenId(clientId string, acid int) string {
 	strSQL := fmt.Sprintf("select openid from openid_tab where res_id='%s' and acid=%d limit 1", clientId, acid)
-	rows, err := common.GetDB().Query(strSQL)
-	defer rows.Close()
+	mydb := common.GetDB()
+	if mydb == nil {
+		fmt.Println("get db connection error")
+		return ""
+	}
+	defer common.FreeDB(mydb)
+	rows, err := mydb.Query(strSQL)
 	if err != nil {
 		return ""
 	} else {
-		var openId int
+		defer rows.Close()
+		var openId string
 		for rows.Next() {
 			rows.Scan(&openId)
 		}
-		return fmt.Sprintf("%d", openId)
+		return openId
 	}
 }
