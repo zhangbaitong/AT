@@ -22,7 +22,7 @@ var (
 //Get db connection from mysql
 func GetDB() (db *sql.DB) {
 	if dbpool == nil {
-		dbpool = CreateDbPool(20, "mysql", "tomzhao:111111@tcp(127.0.0.1:3306)/at_db",true)
+		dbpool = CreateDbPool(20, "mysql", "root:111111@tcp(117.78.19.76:3306)/at_db",true)
 	}
 
 	conn, err := dbpool.GetConn()
@@ -59,7 +59,7 @@ func GetRedisPool() *redis.Pool {
 			MaxIdle:     3,
 			IdleTimeout: 240 * time.Second,
 			Dial: func() (redis.Conn, error) {
-				c, err := redis.Dial("tcp", "10.122.75.218:6379")
+				c, err := redis.Dial("tcp", "117.78.19.76:6379")
 				if err != nil {
 					return nil, err
 				}
