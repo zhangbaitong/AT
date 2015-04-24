@@ -55,7 +55,7 @@ func (oauth *OAuth) GetAuthorize(w http.ResponseWriter, r *http.Request, _ httpr
 
 	} else {
 		//未登录，则返回页面，出现 用户名密码框+授权并登陆按钮+权限列表
-		oauth.View.HTML(w, http.StatusOK, "oauth", map[string]string{"AuthorizeDisplay": "block", "LoginDisplay": "none", "RequestURI": r.RequestURI})
+		oauth.View.HTML(w, http.StatusOK, "oauth", map[string]string{"AuthorizeDisplay": "none", "LoginDisplay": "block", "RequestURI": r.RequestURI})
 	}
 
 }
@@ -93,9 +93,11 @@ func (oauth *OAuth) PostAuthorize(w http.ResponseWriter, r *http.Request, _ http
 			//w.Write([]byte(resp.InternalError))
 			fmt.Println("错误：", resp.InternalError)
 		} else {
-			w.Write([]byte("未知错误"))
+			//w.Write([]byte("未知错误"))
+			resp.Output["err"] = "未知错误"
 		}
 	}
+	osin.OutputJSON(resp, w, r)
 }
 
 func (oauth *OAuth) Token(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {

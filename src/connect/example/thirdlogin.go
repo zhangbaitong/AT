@@ -1,7 +1,7 @@
 package main
 
 // Open url in browser:
-// http://localhost8080/app
+// http://localhost:8080/
 
 import (
 	"fmt"
@@ -15,8 +15,8 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("<html><body>"))
 
-		w.Write([]byte(fmt.Sprintf("<a href=\"https://connect.funzhou.cn/oauth2/authorize?response_type=code&client_id=1234&state=xyz&scope=everything&redirect_uri=%s\">Code</a><br/>", url.QueryEscape("http://localhost8080/appauth/code"))))
-		w.Write([]byte(fmt.Sprintf("<a href=\"https://connect.funzhou.cn/oauth2/authorize?response_type=token&client_id=1234&state=xyz&scope=everything&redirect_uri=%s\">Implict</a><br/>", url.QueryEscape("http://localhost8080/appauth/token"))))
+		w.Write([]byte(fmt.Sprintf("<a href=\"https://connect.funzhou.cn/oauth2/authorize?response_type=code&client_id=1234&state=xyz&scope=everything&redirect_uri=%s\">Code</a><br/>", url.QueryEscape("http://localhost:8080/appauth/code"))))
+		w.Write([]byte(fmt.Sprintf("<a href=\"https://connect.funzhou.cn/oauth2/authorize?response_type=token&client_id=1234&state=xyz&scope=everything&redirect_uri=%s\">Implict</a><br/>", url.QueryEscape("http://localhost:8080/appauth/token"))))
 		w.Write([]byte(fmt.Sprintf("<a href=\"/appauth/password\">Password</a><br/>")))
 		w.Write([]byte(fmt.Sprintf("<a href=\"/appauth/client_credentials\">Client Credentials</a><br/>")))
 		w.Write([]byte(fmt.Sprintf("<a href=\"/appauth/assertion\">Assertion</a><br/>")))
@@ -43,11 +43,11 @@ func main() {
 
 		// build access code url
 		aurl := fmt.Sprintf("https://connect.funzhou.cn/oauth2/token?grant_type=authorization_code&client_id=1234&state=xyz&redirect_uri=%s&code=%s",
-			url.QueryEscape("http://localhost8080/appauth/code"), url.QueryEscape(code))
+			url.QueryEscape("http://localhost:8080/appauth/code"), url.QueryEscape(code))
 
 		// if parse, download and parse json
 		if r.Form.Get("doparse") == "1" {
-			err := example.DownloadAccessToken(fmt.Sprintf("http://localhost8080%s", aurl),
+			err := example.DownloadAccessToken(fmt.Sprintf("http://localhost:8080%s", aurl),
 				&osin.BasicAuth{"1234", "aabbccdd"}, jr)
 			if err != nil {
 				w.Write([]byte(err.Error()))
@@ -113,7 +113,7 @@ func main() {
 			"test", "test")
 
 		// download token
-		err := example.DownloadAccessToken(fmt.Sprintf("http://localhost8080%s", aurl),
+		err := example.DownloadAccessToken(fmt.Sprintf("http://localhost:8080%s", aurl),
 			&osin.BasicAuth{Username: "1234", Password: "aabbccdd"}, jr)
 		if err != nil {
 			w.Write([]byte(err.Error()))
@@ -158,7 +158,7 @@ func main() {
 		aurl := fmt.Sprintf("https://connect.funzhou.cn/oauth2/token?grant_type=client_credentials")
 
 		// download token
-		err := example.DownloadAccessToken(fmt.Sprintf("http://localhost8080%s", aurl),
+		err := example.DownloadAccessToken(fmt.Sprintf("http://localhost:8080%s", aurl),
 			&osin.BasicAuth{Username: "1234", Password: "aabbccdd"}, jr)
 		if err != nil {
 			w.Write([]byte(err.Error()))
@@ -203,7 +203,7 @@ func main() {
 		aurl := fmt.Sprintf("https://connect.funzhou.cn/oauth2/token?grant_type=assertion&assertion_type=urn:osin.example.complete&assertion=osin.data")
 
 		// download token
-		err := example.DownloadAccessToken(fmt.Sprintf("http://localhost8080%s", aurl),
+		err := example.DownloadAccessToken(fmt.Sprintf("http://localhost:8080%s", aurl),
 			&osin.BasicAuth{Username: "1234", Password: "aabbccdd"}, jr)
 		if err != nil {
 			w.Write([]byte(err.Error()))
@@ -307,7 +307,7 @@ func main() {
 		aurl := fmt.Sprintf("/info?code=%s", url.QueryEscape(code))
 
 		// download token
-		err := example.DownloadAccessToken(fmt.Sprintf("http://localhost8080%s", aurl),
+		err := example.DownloadAccessToken(fmt.Sprintf("http://localhost:8080%s", aurl),
 			&osin.BasicAuth{Username: "1234", Password: "aabbccdd"}, jr)
 		if err != nil {
 			w.Write([]byte(err.Error()))
