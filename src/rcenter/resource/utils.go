@@ -16,7 +16,13 @@ const (
 )
 
 func Query(sqlstr string) (ress []Resource, err error) {
-	rows, err := common.GetDB().Query(sqlstr)
+	mydb := common.GetDB()
+	if(mydb==nil){
+		return 
+	}	
+	defer common.FreeDB(mydb)
+
+	rows, err := mydb.Query(sqlstr)
 	defer rows.Close()
 	if err != nil {
 		fmt.Println(err)
@@ -27,7 +33,13 @@ func Query(sqlstr string) (ress []Resource, err error) {
 }
 
 func Insert(res_name string, owner_acid int, operator_acid int) {
-	tx, err := common.GetDB().Begin()
+	mydb := common.GetDB()
+	if(mydb==nil){
+		return 
+	}	
+	defer common.FreeDB(mydb)
+
+	tx, err := mydb.Begin()
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -46,7 +58,13 @@ func Insert(res_name string, owner_acid int, operator_acid int) {
 }
 
 func Update(uuidstr string, res_name string, owner_acid int, operator_acid int, status int) {
-	tx, err := common.GetDB().Begin()
+	mydb := common.GetDB()
+	if(mydb==nil){
+		return 
+	}	
+	defer common.FreeDB(mydb)
+
+	tx, err := mydb.Begin()
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -65,7 +83,13 @@ func Update(uuidstr string, res_name string, owner_acid int, operator_acid int, 
 }
 
 func Delete(uuidstr string) {
-	tx, err := common.GetDB().Begin()
+	mydb := common.GetDB()
+	if(mydb==nil){
+		return 
+	}	
+	defer common.FreeDB(mydb)
+
+	tx, err := mydb.Begin()
 	if err != nil {
 		fmt.Println(err)
 	}

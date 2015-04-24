@@ -67,7 +67,13 @@ func init() {
 }
 
 func register_insert(ac *Account) (ok bool) {
-	tx, err := common.GetDB().Begin()
+	mydb := common.GetDB()
+	if(mydb==nil){
+		return false
+	}	
+	defer common.FreeDB(mydb)
+
+	tx, err := mydb.Begin()
 	if err != nil {
 		fmt.Println(err)
 		return false
@@ -158,8 +164,14 @@ func RegisterAccount(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 
 //登录插入
 func login_query(login *StructLogin) (ok bool) {
+	mydb := common.GetDB()
+	if(mydb==nil){
+		return false
+	}	
+	defer common.FreeDB(mydb)
+
 	strSQL := fmt.Sprintf("select count(ac_name) from account_tab where (ac_name='%s' or email='%s' or mobile='%s') and ac_password='%s'", login.User_name, login.User_name, login.User_name, login.Password)
-	rows, err := common.GetDB().Query(strSQL)
+	rows, err := mydb.Query(strSQL)
 	defer rows.Close()
 	if err != nil {
 		return false
@@ -261,8 +273,14 @@ func Logout(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 //查询账户是否存在
 func isFieldExist(name string, value string) bool {
+	mydb := common.GetDB()
+	if(mydb==nil){
+		return false
+	}	
+	defer common.FreeDB(mydb)	
+
 	strSQL := fmt.Sprintf("select count(ac_name) from account_tab where %s='%s' ", name, value)
-	rows, err := common.GetDB().Query(strSQL)
+	rows, err := mydb.Query(strSQL)
 	defer rows.Close()
 	if err != nil {
 		return false
@@ -303,9 +321,16 @@ func GetAcidByOpenid(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 		return
 	}
 
-	strSQL := fmt.Sprintf("select acid from openid_tab where openid='%s'", strOpenid)
+	mydb := common.GetDB()
+	if(mydb==nil){
+		strBody, _ = setParams("/auth/getacid", 1, "database error!!!!", "")
+		w.Write(strBody)
+		return 
+	}	
+	defer common.FreeDB(mydb)
 
-	rows, err := common.GetDB().Query(strSQL)
+	strSQL := fmt.Sprintf("select acid from openid_tab where openid='%s'", strOpenid)
+	rows, err := mydb.Query(strSQL)
 	defer rows.Close()
 	if err != nil {
 		strBody, _ = setParams("/auth/getacid", 1, "database error !", "")
@@ -326,7 +351,13 @@ func GetAcidByOpenid(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 }
 
 func update_password(strAcName string, strOldPwd string, strNewPwd string) {
-	tx, err := common.GetDB().Begin()
+	mydb := common.GetDB()
+	if(mydb==nil){
+		return 
+	}	
+	defer common.FreeDB(mydb)
+
+	tx, err := mydb.Begin()
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -381,7 +412,15 @@ func ChangePassword(w http.ResponseWriter, r *http.Request, ps httprouter.Params
 		strAcName, strAcName, strAcName, strOldPwd)
 	fmt.Println("strSQL=", strSQL)
 
-	rows, err := common.GetDB().Query(strSQL)
+	mydb := common.GetDB()
+	if(mydb==nil){
+		strBody, _ = setParams("/auth/changepw", 1, "database error!!!!", "")
+		w.Write(strBody)
+		return 
+	}	
+	defer common.FreeDB(mydb)
+
+	rows, err := mydb.Query(strSQL)
 	defer rows.Close()
 	if err != nil {
 		strBody, _ = setParams("/auth/changepw", 1, "database error !", "")
