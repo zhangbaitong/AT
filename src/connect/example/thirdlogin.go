@@ -66,7 +66,7 @@ func main() {
 	http.HandleFunc("/bindingAndlogin", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("<html><body>"))
 		w.Write([]byte("<h2>第三方登陆第三步</h2>"))
-		accessToken := r.Form.Get("access_token")
+		accessToken := r.FormValue("access_token")
 		w.Write([]byte(fmt.Sprintf("<h4>第三方使用access_token去平台请求https://connect.funzhou.cn/oauth2/me?access_token=%s</h4>", accessToken)))
 
 		w.Write([]byte("<h4>获取当前登陆用户的openid（每个应用不一致）,创建（存在就不创建）并绑定第三方自己账号并登陆</h4>"))
