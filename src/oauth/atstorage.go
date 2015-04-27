@@ -22,7 +22,7 @@ func NewATStorage() *AtStorage {
 	client := &osin.DefaultClient{
 		Id:          "1234",
 		Secret:      "aabbccdd",
-		RedirectUri: "http://localhost:8080/appauth/code",
+		RedirectUri: "http://localhost:8080",
 		UserData:    "",
 	}
 

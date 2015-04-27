@@ -26,7 +26,7 @@ func main() {
 	router.POST("/oauth2/authorize", oauth.PostAuthorize)
 	//Step2：通过Authorization Code获取Access Token
 	//Step3：（可选）权限自动续期，获取Access Token
-	router.GET("/oauth2/Token", oauth.Token)
+	router.GET("/oauth2/token", oauth.Token)
 	//Step4:通过Access Token获取用户OpenID
 	router.GET("/oauth2/me", me.Get)
 

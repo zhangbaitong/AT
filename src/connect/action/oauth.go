@@ -83,19 +83,6 @@ func (oauth *OAuth) PostAuthorize(w http.ResponseWriter, r *http.Request, _ http
 		ar.UserData = struct{ Acname string }{Acname: acname}
 		ar.Authorized = true
 		oauth.Server.FinishAuthorizeRequest(resp, r, ar)
-		//通过redirect_uri 返回约定
-	}
-
-	//调用格式错误（redirect_uri、state缺失），或clientid未通过
-	//如有redirect_uri 返回错误约定 并跳转到改redirect_uri
-	if resp.IsError {
-		if resp.InternalError != nil {
-			//w.Write([]byte(resp.InternalError))
-			fmt.Println("错误：", resp.InternalError)
-		} else {
-			//w.Write([]byte("未知错误"))
-			resp.Output["err"] = "未知错误"
-		}
 	}
 	osin.OutputJSON(resp, w, r)
 }
@@ -127,18 +114,8 @@ func (oauth *OAuth) Token(w http.ResponseWriter, r *http.Request, _ httprouter.P
 			}
 		}
 		oauth.Server.FinishAccessRequest(resp, r, ar)
-		//通过redirect_uri 返回约定
 	}
-
-	//调用格式错误（redirect_uri、state缺失），或clientid未通过
-	//如有redirect_uri 返回错误约定 并跳转到改redirect_uri
-	if resp.IsError {
-		if resp.InternalError != nil {
-			//w.Write([]byte(resp.InternalError))
-		} else {
-			w.Write([]byte("未知错误"))
-		}
-	}
+	osin.OutputJSON(resp, w, r)
 }
 
 func (oauth *OAuth) Logged(w http.ResponseWriter, req *http.Request) string {
