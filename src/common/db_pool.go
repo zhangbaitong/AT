@@ -2,7 +2,8 @@ package common
 
 import (
 	"fmt"
-	"time"
+    "time"
+    "sync"
 	"errors"
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
@@ -14,6 +15,8 @@ type DbPool struct {
     DataSourceName string
     IsPrimary   bool
     MaxPoolSize int
+    PoolSize int
+    Mu          sync.Mutex
     Conns       chan *sql.DB
 }
 
@@ -38,14 +41,21 @@ func CreateDbPool(maxPoolsize int, strDriverName string, strDataSourceName strin
     	for i := 0; i < dbPool.MaxPoolSize/2; i++ {
         <-flag
     	}
+     dbPool.PoolSize= dbPool.MaxPoolSize/2
 
     	return dbPool
 }
 
 //从连接池中获取连接
 func (this *DbPool) GetConn() (*sql.DB, error) {
-    if len(this.Conns) == 0 {
+    //if len(this.Conns) == 0 {
+    if this.PoolSize <this.MaxPoolSize && len(this.Conns) == 0 {
         go func() {
+            this.Mu.Lock()
+            if(this.PoolSize >=this.MaxPoolSize) {
+                return
+            }
+
             for i := 0; i < this.MaxPoolSize/2; i++ {
                 conn, err := sql.Open(this.DriverName, this.DataSourceName)
                 if err != nil {
@@ -54,6 +64,8 @@ func (this *DbPool) GetConn() (*sql.DB, error) {
                 }
                 this.PutConn(conn)
             }
+            this.PoolSize=this.MaxPoolSize
+            this.Mu.Unlock()
         }()
     }
 

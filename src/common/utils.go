@@ -16,16 +16,17 @@ var (
 	Conn   *sql.DB
 	Logger *log.Logger
 	pool   *redis.Pool
-	dbpool *DbPool
+	DBpool *DbPool
 )
 
 //Get db connection from mysql
 func GetDB() (db *sql.DB) {
-	if dbpool == nil {
-		dbpool = CreateDbPool(20, "mysql", "root:111111@tcp(117.78.19.76:3306)/at_db",true)
+	if DBpool == nil {
+		DBpool = CreateDbPool(20, "mysql", "root:111111@tcp(117.78.19.76:3306)/at_db",true)
+		//DBpool = CreateDbPool(20, "mysql", "tomzhao:111111@tcp(127.0.0.1:3306)/at_db",true)
 	}
 
-	conn, err := dbpool.GetConn()
+	conn, err := DBpool.GetConn()
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -35,7 +36,15 @@ func GetDB() (db *sql.DB) {
 }
 
 func FreeDB(db *sql.DB) {
-	dbpool.PutConn(db)
+	DBpool.PutConn(db)
+}
+
+func GetDBInfo() (info string) {
+	if DBpool == nil {
+		return "DB not init\r\n"
+	}
+
+	return fmt.Sprintf("PoolSize=%d;MaxPoolSize=%d",DBpool.PoolSize,DBpool.MaxPoolSize)
 }
 
 //get uuid lik a227cedf-e806-11e4-8666-3c075419d855

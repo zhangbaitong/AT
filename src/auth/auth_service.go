@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"runtime"
 	"time"
+	"common"
 )
 
 func init() {
@@ -17,9 +18,26 @@ func init() {
 func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprint(w, "Welcome!\n")
 }
-
+// ab -c 100 -n 1000 'http://127.0.0.1:8080/hello/tomzhao'
 func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	fmt.Fprintf(w, "hello, %s!\n", ps)
+	strSQL := "SELECT ac_name FROM account_tab"
+	mydb := common.GetDB()
+	defer common.FreeDB(mydb)	
+
+	rows, err := mydb.Query(strSQL)
+	if err != nil {
+	} else {
+		defer rows.Close()
+		var strAcName string
+		for rows.Next() {
+			rows.Scan(&strAcName)
+		}
+		fmt.Fprintf(w, "hello, %s at %s!!!!!!\n", strAcName,time.Now().String())
+	} 	
+}
+
+func sysinfo(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	fmt.Fprintf(w, common.GetDBInfo())
 }
 
 type HostSwitch map[string]http.Handler
@@ -36,6 +54,7 @@ func new_router() *httprouter.Router {
 	router := httprouter.New()
 	//router.GET("/", Index)
 	//router.GET("/hello/:name", Hello)
+	router.GET("/sysinfo", sysinfo)
 	router.POST("/auth/register", action.RegisterAccount)
 	router.POST("/auth/login", action.Login)
 	router.POST("/auth/logout", action.Logout)
